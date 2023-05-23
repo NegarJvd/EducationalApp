@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -24,12 +23,12 @@ class UserFactory extends Factory
         return [
             'first_name' => fake()->firstName($gender),
             'last_name' => fake()->lastName(),
-            'phone' => "0914" . rand(1111111, 9999999),
+            'phone' => "0914" . rand(1111111, 9999999),  //just tabriz area code
             'email' => fake()->unique()->safeEmail(),
             'birth_date' => fake()->date(),
             'gender' => $gender,
             'address' => fake()->address(),
-            'landline_phone' => "041" . rand(11111111, 99999999),
+            'landline_phone' => "041" . rand(11111111, 99999999),  //just tabriz area code
             'father_name' => fake()->firstName('male'),
             'mother_name' => fake()->firstName('female'),
             'first_visit' => fake()->date(),

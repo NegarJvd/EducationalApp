@@ -24,12 +24,12 @@ class AdminFactory extends Factory
         return [
             'first_name' => fake()->firstName($gender),
             'last_name' => fake()->lastName(),
-            'phone' => "0914" . rand(1111111, 9999999),
+            'phone' => "0914" . rand(1111111, 9999999), //just tabriz area code
             'email' => fake()->unique()->safeEmail(),
             'birth_date' => fake()->date(),
             'gender' => $gender,
             'address' => fake()->address(),
-            'landline_phone' => "041" . rand(11111111, 99999999),
+            'landline_phone' => "041" . rand(11111111, 99999999), //just tabriz area code
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
         ];
     }
