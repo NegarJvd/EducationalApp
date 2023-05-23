@@ -1,17 +1,6 @@
 <?php
 
-//use App\Http\Controllers\Auth\LoginController;
-//use App\Http\Controllers\Panel\CommentController;
-//use App\Http\Controllers\Panel\OptionsController;
-//use App\Http\Controllers\Panel\TicketController;
-//use App\Http\Controllers\HomeController;
-//use App\Http\Controllers\Panel\AdminController;
-//use App\Http\Controllers\Panel\CategoryController;
-//use App\Http\Controllers\Panel\MessageController;
-//use App\Http\Controllers\Panel\PermissionController;
-//use App\Http\Controllers\Panel\RoleController;
-//use App\Http\Controllers\UploadController;
-//use App\Http\Controllers\Panel\UserController;
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -31,9 +20,9 @@ Route::get('/', function () {
 });
 
 Auth::routes(['register' => false, 'reset' => false]);
-//Route::get('forgotPasswordView', [LoginController::class, 'forgotPasswordView']);
-//Route::post('forgotPassword', [LoginController::class, 'forgotPassword'])->name('forgotPassword');
-//Route::post('resetPassword', [LoginController::class, 'resetPassword'])->name('resetPassword');
+Route::get('forgotPasswordView', [LoginController::class, 'forgotPasswordView']);
+Route::post('forgotPassword', [LoginController::class, 'forgotPassword'])->name('forgotPassword');
+Route::post('resetPassword', [LoginController::class, 'resetPassword'])->name('resetPassword');
 //
 //Route::get('/panel', [App\Http\Controllers\Panel\HomeController::class, 'index'])->name('panel');
 //
