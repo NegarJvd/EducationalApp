@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UploadController;
-use App\Models\City;
-use App\Models\Order;
 use App\Models\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -37,24 +35,10 @@ class HomeController extends Controller
 //        Artisan::call('storage:link');
 
         $users_count = User::count();
-        $orders_count = Order::where('status', '!=', Order::status_list()[0])
-                            ->count();
+//        $categories_count = Category::count();
+//        $videos_count = Video::count();
 
-        $today = Jalalian::forge('today');
-        $start = date("Y-m-d H:i:s", $today->getTimestamp());
-        $end = date("Y-m-d H:i:s", $today->addHours(23)->addMinutes(59)->addSeconds(59)->getTimestamp());
-
-//        $today_transactions = Transaction::whereBetween('created_at', [$start, $end])->get();
-
-        $orders = Order::whereBetween('delivery_time', [$start, $end])
-                        ->where('status', '!=', Order::status_list()[0])
-                        ->with('products')
-                        ->with('user')
-                        ->orderBy('id', 'desc')
-                        ->limit(5)
-                        ->get();
-
-        return view('panel/home', compact('users_count', 'orders_count', 'orders'));
+        return view('panel/home', compact('users_count'));
     }
 
     public function dashboard_info_counts(){
@@ -69,7 +53,6 @@ class HomeController extends Controller
         }
 
         $last_week_users = [];
-        $last_week_orders = [];
         $last_week_dates = [];
 
         for($i = 0; $i<7; $i++){
@@ -77,14 +60,12 @@ class HomeController extends Controller
             $end = date("Y-m-d H:i:s", $last_saturday->addHours(23)->addMinutes(59)->addSeconds(59)->getTimestamp());
 
             $last_week_users[] = User::whereBetween('created_at', [$start, $end])->count();
-            $last_week_orders[] = Order::whereBetween('created_at', [$start, $end])->where('status', '!=', Order::status_list()[0])->count();
 
             $last_week_dates[] = [$start, $end];
             $last_saturday = $last_saturday->addDays(1);
         }
 
         $this_week_users = [];
-        $this_week_orders = [];
         $this_week_dates = [];
 
         for($i = 0; $i<7; $i++){
@@ -92,17 +73,14 @@ class HomeController extends Controller
             $end = date("Y-m-d H:i:s", $this_saturday->addHours(23)->addMinutes(59)->addSeconds(59)->getTimestamp());
 
             $this_week_users[] = User::whereBetween('created_at', [$start, $end])->count();
-            $this_week_orders[] = Order::whereBetween('created_at', [$start, $end])->where('status', '!=', Order::status_list()[0])->count();
 
             $this_week_dates[] = [$start, $end];
             $this_saturday = $this_saturday->addDays(1);
         }
 
         $data['last_week_users'] = $last_week_users;
-        $data['last_week_orders'] = $last_week_orders;
         $data['last_week_dates'] = $last_week_dates;
         $data['this_week_users'] = $this_week_users;
-        $data['this_week_orders'] = $this_week_orders;
         $data['this_week_dates'] = $this_week_dates;
 
         return $this->success($data, "اطلاعات داشبورد");

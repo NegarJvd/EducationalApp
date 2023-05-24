@@ -47,6 +47,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = [
+        'name'
+    ];
+
+    function getNameAttribute() {
+        return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+    }
+
     public static function gender(){
         return ['male', 'female'];
     }
