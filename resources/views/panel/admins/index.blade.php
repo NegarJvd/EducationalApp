@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="breadcrumb-wrapper">
-        <h1>مدیریت مدیران</h1>
+        <h1>مدیریت کاربران</h1>
 
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb p-0">
