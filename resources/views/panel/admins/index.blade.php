@@ -41,9 +41,9 @@
                     @include('panel.panel_message')
 
                     <form method="GET" action="{{url('/panel/admins')}}">
-                        <div class="search-form d-none d-lg-inline-block">
+                        <div class="search-form d-none d-lg-inline-block col-6">
                             <div class="input-group">
-                                <input type="text" id="search-input" name="search" class="form-control border border-secondary" placeholder="نام، موبايل يا ايميل ..."
+                                <input type="text" id="search-input" name="search" class="form-control border border-secondary" placeholder="نام، کد نظام پزشکی، موبايل يا ايميل ..."
                                            value="{{request('search')}}" autofocus autocomplete="off" />
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" title="جست و جو" type="submit">
@@ -59,7 +59,9 @@
                             <tr>
                                 <th></th>
                                 <th>نام</th>
+                                <th>کد نظام پزشکی</th>
                                 <th>شماره همراه</th>
+                                <th>مدرک تحصیلی</th>
                                 @can('role-list')
                                     <th>نقش</th>
                                 @endcan
@@ -73,7 +75,9 @@
                                 <tr>
                                     <td>{{ $admin->id }}</td>
                                     <td>{{ $admin->name }}</td>
+                                    <td>{{ $admin->medical_system_number }}</td>
                                     <td>{{ $admin->phone }}</td>
+                                    <td>{{ $admin->degree_of_education }}</td>
                                     @can('role-list')
                                         <td>
                                             @if(!empty($admin->getRoleNames()))

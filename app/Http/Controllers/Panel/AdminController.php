@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Models\City;
-//use App\Models\Option;
-use App\Models\Upload;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Negar\Smsirlaravel\Smsirlaravel;
-use Spatie\Permission\Models\Permission;
+//use Negar\Smsirlaravel\Smsirlaravel;
 use Spatie\Permission\Models\Role;
 use App\Models\admin;
 use Exception;
@@ -31,23 +27,6 @@ class AdminController extends Controller
      */
     function __construct()
     {
-        $permissions = [
-            'admin-list',
-            'admin-create',
-            'admin-edit',
-            'admin-delete',
-            'change_admin_role',
-            'search_in_admins_list',
-            'change-admin-status',
-        ];
-
-        foreach ($permissions as $permission) {
-            $array = Permission::where('name', $permission)->get();
-            if(count($array) == 0){
-                Permission::create(['name' => $permission]);
-            }
-        }
-
         $this->middleware('permission:admin-list|admin-create|admin-edit|admin-delete|change_admin_role|search_in_admins_list|change-admin-status');
         $this->middleware('permission:admin-list', ['only' => ['index','show']]);
         $this->middleware('permission:admin-create', ['only' => ['create','store']]);
@@ -71,7 +50,9 @@ class AdminController extends Controller
         $search = $request->get('search');
         if (!is_null($search)){
             $data = $data->where(function ($query) use($search){
-                $query->where('name', 'LIKE', "%$search%");
+                $query->where('first_name', 'LIKE', "%$search%");
+                $query->orWhere('last_name' , 'LIKE', "%$search%");
+                $query->orWhere('medical_system_number' , 'LIKE', "%$search%");
                 $query->orWhere('phone' , 'LIKE', "%$search%");
                 $query->orWhere('email', 'LIKE', "%$search%");
             });
@@ -104,32 +85,47 @@ class AdminController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:admins'],
-            'phone' => ['required','numeric','digits:11','regex:/^(09)/', 'unique:admins'],
-            'landline_phone' => ['nullable','numeric'],
-            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:admins'],
-            'gender' => ['nullable', 'in:male,female,other'],
-            'date_of_birth' => ['nullable'],
-            'avatar_id' => ['nullable', Rule::in(Upload::pluck('id'))],
-            'city_id' => ['nullable', Rule::in(City::pluck('id'))],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'numeric','digits:11','regex:/^(09)/', 'unique:admins,phone'],
+            'email'=> ['nullable', 'string', 'email', 'max:255', 'unique:admins,email'],
+            'medical_system_number', ['required', 'unique:admins,medical_system_number'],
+            'birth_date' => ['nullable'],
+            'gender' => ['nullable', Rule::in(Admin::gender())],
+            'address' => ['nullable', 'string', 'max:255'],
+            'landline_phone' => ['nullable', 'string', 'max:255'],
+            'field_of_profession' => ['nullable', 'string', 'max:255'],
+            'resume' => ['nullable', 'string'],
+            'degree_of_education' => ['nullable', 'string', 'max:255'],
+//            'avatar_id' => ['nullable', Rule::in(Upload::pluck('id'))],
             'role' => ['nullable', Rule::in(Role::pluck('name'))]
         ]);
 
         $input = $request->all();
-        $input['date_of_birth'] = !is_null($request->get('date_of_birth')) ? timestamp_to_date($request->get('date_of_birth')) : null;
+        $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date')) : null;
+        $input['status'] = Admin::status()[1];
 
-        $admin = new Admin($input);
-        $pass = Str::random(5);
-        $admin->password = Hash::make($pass);
-        $admin->save();
+        DB::beginTransaction();
+        try {
+            $admin = new Admin($input);
+            $pass = Str::random(5);
+            $admin->password = Hash::make($pass);
+            $admin->save();
 
-        $role = $request->get('role');
-        if(!is_null($role)){
-            $admin->assignRole([$role]);
+            $role = $request->get('role');
+            if(!is_null($role)){
+                $admin->assignRole([$role]);
+            }
+
+//        Smsirlaravel::ultraFastSend(['password' => $pass], 56161, $admin->phone);
+
+            DB::commit();
+        }catch (Exception $exception){
+            DB::rollBack();
+
+            return redirect()->back()
+                ->with('error','مشکلی در ایجاد مدیر پیش آمده است لطفا مجدد اطلاعات را وارد کنید.');
         }
-
-        Smsirlaravel::ultraFastSend(['password' => $pass], 56161, $admin->phone);
 
         return redirect()->route('panel.admins.index')
             ->with('success','مدیر با موفقیت ایجاد شد.');
@@ -171,20 +167,24 @@ class AdminController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:admins,username,'.$id],
-            'phone' => ['required','numeric','digits:11','regex:/^(09)/', 'unique:admins,phone,'.$id],
-            'landline_phone' => ['nullable','numeric'],
-            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:admins,email,'.$id],
-            'gender' => ['nullable', 'in:male,female,other'],
-            'date_of_birth' => ['nullable'],
-            'avatar_id' => ['nullable', Rule::in(Upload::pluck('id'))],
-            'city_id' => ['nullable', Rule::in(City::pluck('id'))],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'numeric','digits:11','regex:/^(09)/', 'unique:admins,phone,'.$id],
+            'email'=> ['nullable', 'string', 'email', 'max:255', 'unique:admins,email,'.$id],
+            'medical_system_number', ['required', 'unique:admins,medical_system_number'],
+            'birth_date' => ['nullable'],
+            'gender' => ['nullable', Rule::in(Admin::gender())],
+            'address' => ['nullable', 'string', 'max:255'],
+            'landline_phone' => ['nullable', 'string', 'max:255'],
+            'field_of_profession' => ['nullable', 'string', 'max:255'],
+            'resume' => ['nullable', 'string'],
+            'degree_of_education' => ['nullable', 'string', 'max:255'],
+//            'avatar_id' => ['nullable', Rule::in(Upload::pluck('id'))],
         ]);
         $admin = Admin::find($id);
 
         $input = $request->all();
-        $input['date_of_birth'] = !is_null($request->get('date_of_birth')) ? timestamp_to_date($request->get('date_of_birth')) : $admin->date_of_birth;
+        $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date')) : $admin->birth_date;
 
         $admin->update($input);
 
@@ -224,12 +224,14 @@ class AdminController extends Controller
     }
 
     public function search_in_admins_list_json(Request $request){
-        $query = Admin::select('id', 'name', 'phone', 'email');
+        $query = Admin::select('id', 'first_name', 'last_name', 'medical_system_number', 'phone', 'email');
 
         $keyword = $request->get('q');
         if (!empty($keyword)) {
             $query->where(function($query) use($keyword){
-                $query->where('name', 'LIKE', "%$keyword%")
+                $query->where('first_name', 'LIKE', "%$keyword%")
+                    ->orWhere('last_name', 'LIKE', "%$keyword%")
+                    ->orWhere('medical_system_number', 'LIKE', "%$keyword%")
                     ->orWhere('phone', 'LIKE', "%$keyword%")
                     ->orWhere('email', 'LIKE', "%$keyword%");
             });
@@ -244,11 +246,11 @@ class AdminController extends Controller
         if ($admin){
             $status = $admin->status;
 
-            if ($status == "active"){
-                $admin->status = "inactive";
+            if ($status == Admin::status()[0]){
+                $admin->status = Admin::status()[1];
                 $admin->save();
             }else{
-                $admin->status = "active";
+                $admin->status = Admin::status()[0];
                 $admin->save();
             }
 
