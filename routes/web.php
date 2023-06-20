@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Panel\AdminController;
-use App\Http\Controllers\Panel\PermissionController;
 use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +37,6 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
 ////    Route::post('store_fcm', [HomeController::class, 'storeFCM']);
 ////    Route::get('message_list', [\App\Http\Controllers\UserController::class, 'messages_list']);
 
-    Route::resource('permissions', PermissionController::class);
     Route::resource('roles', RoleController::class);
 
     Route::resource('admins', AdminController::class);

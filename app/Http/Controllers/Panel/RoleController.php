@@ -23,11 +23,11 @@ class RoleController extends Controller
      */
     function __construct()
     {
-//        $this->middleware('permission:role-list|role-create|role-edit|role-delete');
-//        $this->middleware('permission:role-list', ['only' => ['index']]);
-//        $this->middleware('permission:role-create', ['only' => ['create','store']]);
-//        $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
-//        $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:role-list|role-create|role-edit|role-delete');
+        $this->middleware('permission:role-list', ['only' => ['index']]);
+        $this->middleware('permission:role-create', ['only' => ['create','store']]);
+        $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:role-delete', ['only' => ['destroy']]);
     }
 
     /**
@@ -117,12 +117,6 @@ class RoleController extends Controller
         $role = Role::find($id);
         $role->name = $request->input('name');
         $role->save();
-
-//        if ($id == 3){ //this is for The role of ordinary users options
-//            $ordinary_user_role = Option::where('key', 'The role of ordinary users')->first();
-//            $ordinary_user_role->value = $role->name;
-//            $ordinary_user_role->save();
-//        }
 
         $role->syncPermissions($request->input('permission'));
 
