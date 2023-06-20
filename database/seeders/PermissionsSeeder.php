@@ -21,6 +21,7 @@ class PermissionsSeeder extends Seeder
 
         $Manager_permissions = [
             'admin-list', 'admin-create', 'admin-edit', 'admin-delete', 'change_admin_role', 'search_in_admins_list', 'change-admin-status',
+            'user-list', 'user-create', 'user-edit', 'user-delete', 'search_in_users_list', 'change-user-status',
         ];
         $Therapist_permissions = [
 

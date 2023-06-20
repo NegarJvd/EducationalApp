@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
     Route::get('change_admin_status/{user_id}', [AdminController::class, 'change_admin_status'])->name('change_admin_status');
 
     Route::resource('users', UserController::class);
-    Route::get('change_user_status/{user_id}', [UserController::class, 'change_user_status'])->name('change_user_status');
+//    Route::get('change_user_status/{user_id}', [UserController::class, 'change_user_status'])->name('change_user_status');
 ////    Route::resource('/addresses', AddressesController::class)->only('show', 'store', 'update', 'destroy');
 //
 ////    Route::resource('categories', CategoryController::class);

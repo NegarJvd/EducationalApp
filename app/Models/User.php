@@ -35,6 +35,7 @@ class User extends Authenticatable
         'father_name',
         'mother_name',
         'first_visit',
+        'diagnosis'
     ];
 
     /**
@@ -48,11 +49,15 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'name'
+        'name', 'parent_name'
     ];
 
     function getNameAttribute() {
         return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+    }
+
+    function getParentNameAttribute() {
+        return $this->attributes['father_name'] . ' - ' . $this->attributes['mother_name'];
     }
 
     public static function gender(){

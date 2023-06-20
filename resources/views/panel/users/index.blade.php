@@ -12,7 +12,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item">
-                    کاربران
+                    مراجعه کنندگان
                 </li>
             </ol>
         </nav>
@@ -23,10 +23,10 @@
         <div class="col-12">
             <div class="card card-default">
                 <div class="card-header card-header-border-bottom d-flex justify-content-between">
-                    <h2>لیست کاربران</h2>
+                    <h2>لیست مراجعه کننده ها</h2>
 
                     @can('user-create')
-                        <a href="{{ route('panel.users.create') }}" class="btn btn-outline-primary btn-sm text-uppercase" title="افزودن کاربر">
+                        <a href="{{ route('panel.users.create') }}" class="btn btn-outline-primary btn-sm text-uppercase" title="افزودن مراجعه کننده">
                             <i class="mdi mdi-24px mdi-account-plus"></i>
                         </a>
                     @endcan
@@ -41,9 +41,9 @@
                     @include('panel.panel_message')
 
                     <form method="GET" action="{{url('/panel/users')}}">
-                        <div class="search-form d-none d-lg-inline-block">
+                        <div class="search-form d-none d-lg-inline-block col-6">
                             <div class="input-group">
-                                <input type="text" id="search-input" name="search" class="form-control border border-secondary" placeholder="نام، موبايل يا ايميل ..."
+                                <input type="text" id="search-input" name="search" class="form-control border border-secondary" placeholder="نام، نام والدین، موبايل يا ايميل ..."
                                            value="{{request('search')}}" autofocus autocomplete="off" />
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" title="جست و جو" type="submit">
@@ -60,6 +60,9 @@
                                 <th></th>
                                 <th>نام</th>
                                 <th>شماره همراه</th>
+                                <th>نام والدین</th>
+                                <th>اولین مراجعه</th>
+                                <th>تشخیص</th>
                                 <th>عملیات</th>
                             </tr>
                         </thead>
@@ -71,8 +74,11 @@
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->phone }}</td>
+                                    <td>{{ $user->parent_name }}</td>
+                                    <td>{{ Morilog\Jalali\CalendarUtils::strftime('Y/m/d', strtotime($user->first_visit))}}</td>
+                                    <td>{{ $user->diagnosis }}</td>
                                     <td>
-{{--                                        <a class="btn p-0" href="{{ route('panel.users.show',$user->id) }}" title="نمایش"><span class="mdi mdi-eye-outline mdi-dark mdi-18px"></span></a>--}}
+                                        <a class="btn p-0" href="{{ route('panel.users.show',$user->id) }}" title="نمایش"><span class="mdi mdi-eye-outline mdi-dark mdi-18px"></span></a>
 
                                         @can('user-edit')
                                         <a class="btn p-0" href="{{ route('panel.users.edit',$user->id) }}" title="ویرایش"><span class="mdi mdi-square-edit-outline mdi-dark mdi-18px"></span></a>

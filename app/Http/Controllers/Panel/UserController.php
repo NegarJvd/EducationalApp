@@ -7,6 +7,7 @@ use App\Models\City;
 //use App\Models\Option;
 use App\Models\Order;
 use App\Models\Upload;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -30,22 +31,6 @@ class UserController extends Controller
      */
     function __construct()
     {
-        $permissions = [
-            'user-list',
-            'user-create',
-            'user-edit',
-            'user-delete',
-            'search_in_users_list',
-            'change-user-status',
-        ];
-
-        foreach ($permissions as $permission) {
-            $array = Permission::where('name', $permission)->get();
-            if(count($array) == 0){
-                Permission::create(['name' => $permission]);
-            }
-        }
-
         $this->middleware('permission:user-list|user-create|user-edit|user-delete|search_in_users_list|change-user-status');
         $this->middleware('permission:user-list', ['only' => ['index','show']]);
         $this->middleware('permission:user-create', ['only' => ['create','store']]);
@@ -68,9 +53,13 @@ class UserController extends Controller
         $search = $request->get('search');
         if (!is_null($search)){
             $data = $data->where(function ($query) use($search){
-                $query->where('name', 'LIKE', "%$search%");
+                $query->where('first_name', 'LIKE', "%$search%");
+                $query->orWhere('last_name' , 'LIKE', "%$search%");
                 $query->orWhere('phone' , 'LIKE', "%$search%");
                 $query->orWhere('email', 'LIKE', "%$search%");
+                $query->orWhere('father_name' , 'LIKE', "%$search%");
+                $query->orWhere('mother_name', 'LIKE', "%$search%");
+
             });
         }
 
@@ -92,33 +81,49 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => ['nullable', 'string', 'max:255'],
-//            'username' => ['nullable', 'string', 'max:255', 'unique:users'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'phone' => ['required','numeric','digits:11','regex:/^(09)/', 'unique:users'],
-            'landline_phone' => ['nullable','numeric'],
             'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users'],
-            'gender' => ['nullable', 'in:male,female,other'],
-            'date_of_birth' => ['nullable'],
-            'avatar_id' => ['nullable', Rule::in(Upload::pluck('id'))],
-            'city_id' => ['nullable', Rule::in(City::pluck('id'))],
+            'birth_date' => ['nullable'],
+            'gender' => ['nullable', Rule::in(User::gender())],
+            'address' => ['nullable', 'string', 'max:255'],
+            'landline_phone' => ['nullable', 'numeric', 'max:255'],
+            'father_name' => ['nullable', 'string', 'max:255'],
+            'mother_name' => ['nullable', 'string', 'max:255'],
+            'first_visit' => ['nullable'],
+            'diagnosis' => ['nullable', 'string', 'max:255'],
+
+//            'avatar_id' => ['nullable', Rule::in(Upload::pluck('id'))],
         ]);
 
         $input = $request->all();
-        $input['date_of_birth'] = !is_null($request->get('date_of_birth')) ? timestamp_to_date($request->get('date_of_birth')) : null;
+        $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date')) : null;
 
-        $user = new User($input);
-        $pass = Str::random(5);
-        $user->password = Hash::make($pass);
-        $user->save();
+        DB::beginTransaction();
 
-        Smsirlaravel::ultraFastSend(['password' => $pass], 56161, $user->phone);
+        try {
+            $user = new User($input);
+            $pass = Str::random(5);
+            $user->password = Hash::make($pass);
+            $user->save();
+
+//            Smsirlaravel::ultraFastSend(['password' => $pass], 56161, $user->phone);
+
+            DB::commit();
+        }catch (Exception $exception){
+            DB::rollBack();
+
+            return redirect()->back()
+                ->with('error','مشکلی در ایجاد مراجعه کننده پیش آمده است لطفا مجدد اطلاعات را وارد کنید.');
+        }
 
         if($request->wantsJson()){
-            return $this->success(User::with('addresses')->find($user->id), "کاربر جدید با موفقیت اضافه شد.");
+            return $this->success(User::with('addresses')->find($user->id), "مراجعه کننده جدید با موفقیت اضافه شد.");
         }
 
         return redirect()->route('panel.users.index')
-            ->with('success','کاربر با موفقیت ایجاد شد.');
+            ->with('success','مراجعه کننده با موفقیت ایجاد شد.');
     }
 
     /**
@@ -129,8 +134,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $addresses = $user->addresses()->get();
-        return view('panel.users.show',compact('user', 'addresses'));
+        return view('panel.users.show',compact('user'));
     }
 
     /**
@@ -139,50 +143,9 @@ class UserController extends Controller
      * @param User $user
      * @return Application|Factory|View
      */
-    public function edit(User $user, Request $request)
+    public function edit(User $user)
     {
-        $addresses = $user->addresses()->get();
-
-        //these are can be in show function------------------------
-        $orders = $user->orders()
-            ->where('status', '!=', Order::status_list()[0]);
-
-        //search and filter
-        $search = $request->get('search');
-        if (!is_null($search)){
-            $orders->where('order_number', 'LIKE', "%$search%");
-        }
-
-        $status = $request->get('status');
-        if (!is_null($status)){
-            $orders->where('status', $status);
-        }
-        //end filter
-
-        $orders = $orders->orderBy('id', 'desc')
-            ->paginate($this->perPagePanel, ['*'], 'order_page');
-
-        $transactions = $user->transactions();
-
-        $type = $request->get('type');
-        if(!is_null($type)){
-            $transactions = $transactions->where('type', $type);
-        }
-
-        $start_date = !is_null($request->get('alt_start_date')) ? timestamp_to_date($request->get('alt_start_date')) : null ;
-        $end_date = !is_null($request->get('alt_end_date')) ? timestamp_to_date($request->get('alt_end_date')) : null ;
-
-        if (!is_null($start_date) and !is_null($end_date)){
-            $transactions = $transactions->whereBetween('created_at', [$start_date, $end_date]);
-        }
-
-        $transactions = $transactions->orderBy('created_at', 'desc')
-            ->paginate($this->perPagePanel, ['*'], 'transaction_page');
-
-
-        //--------------------------------------------------------
-
-        return view('panel.users.edit',compact('user', 'addresses', 'orders', 'transactions'));
+        return view('panel.users.edit',compact('user'));
     }
 
     /**
@@ -196,25 +159,30 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => ['nullable', 'string', 'max:255'],
-//            'username' => ['nullable', 'string', 'max:255', 'unique:users,username,'.$id],
-            'phone' => ['required','numeric','digits:11','regex:/^(09)/', 'unique:users,phone,'.$id],
-            'landline_phone' => ['nullable','numeric'],
-            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users,email,'.$id],
-            'gender' => ['nullable', 'in:male,female,other'],
-            'date_of_birth' => ['nullable'],
-            'avatar_id' => ['nullable', Rule::in(Upload::pluck('id'))],
-            'city_id' => ['nullable', Rule::in(City::pluck('id'))],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'phone' => ['required','numeric','digits:11','regex:/^(09)/', 'unique:users'],
+            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users'],
+            'birth_date' => ['nullable'],
+            'gender' => ['nullable', Rule::in(User::gender())],
+            'address' => ['nullable', 'string', 'max:255'],
+            'landline_phone' => ['nullable', 'numeric', 'max:255'],
+            'father_name' => ['nullable', 'string', 'max:255'],
+            'mother_name' => ['nullable', 'string', 'max:255'],
+            'first_visit' => ['nullable'],
+            'diagnosis' => ['nullable', 'string', 'max:255'],
+
+//            'avatar_id' => ['nullable', Rule::in(Upload::pluck('id'))],
         ]);
         $user = User::find($id);
 
         $input = $request->all();
-        $input['date_of_birth'] = !is_null($request->get('date_of_birth')) ? timestamp_to_date($request->get('date_of_birth')) : $user->date_of_birth;
+        $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date')) : $user->birth_date;
 
         $user->update($input);
 
         return redirect()->route('panel.users.index')
-            ->with('success','کاربر با موفقیت ویرایش شد.');
+            ->with('success','مراجعه کننده با موفقیت ویرایش شد.');
     }
 
     /**
@@ -228,19 +196,21 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('panel.users.index')
-            ->with('success','کاربر با موفقیت حذف شد.');
+            ->with('success','مراجعه کننده با موفقیت حذف شد.');
     }
 
     public function search_in_users_list_json(Request $request){
-        $query = User::select('id', 'name', 'phone', 'email')
-                        ->with('addresses');
+        $query = User::select('id', 'first_name', 'last_name', 'phone', 'email', 'father_name', 'mother_name');
 
         $keyword = $request->get('q');
         if (!empty($keyword)) {
             $query->where(function($query) use($keyword){
-                $query->where('name', 'LIKE', "%$keyword%")
+                $query->where('first_name', 'LIKE', "%$keyword%")
+                        ->orWhere('last_name', 'LIKE', "%$keyword%")
                         ->orWhere('phone', 'LIKE', "%$keyword%")
-                        ->orWhere('email', 'LIKE', "%$keyword%");
+                        ->orWhere('email', 'LIKE', "%$keyword%")
+                        ->orWhere('father_name', 'LIKE', "%$keyword%")
+                        ->orWhere('mother_name', 'LIKE', "%$keyword%");
             });
         }
 
@@ -248,24 +218,24 @@ class UserController extends Controller
         return response($users);
     }
 
-    public function change_user_status($user_id){
-        $user = User::find($user_id);
-        if ($user){
-            $status = $user->status;
-
-            if ($status == "active"){
-                $user->status = "inactive";
-                $user->save();
-            }else{
-                $user->status = "active";
-                $user->save();
-            }
-
-            return redirect()->back()
-                ->with('success', "وضعیت کاربر تغییر بافت.");
-        }
-
-        return redirect()->back()
-            ->with('error', "کاربر یافت نشد.");
-    }
+//    public function change_user_status($user_id){
+//        $user = User::find($user_id);
+//        if ($user){
+//            $status = $user->status;
+//
+//            if ($status == "active"){
+//                $user->status = "inactive";
+//                $user->save();
+//            }else{
+//                $user->status = "active";
+//                $user->save();
+//            }
+//
+//            return redirect()->back()
+//                ->with('success', "وضعیت مراجعه کننده تغییر بافت.");
+//        }
+//
+//        return redirect()->back()
+//            ->with('error', "مراجعه کننده یافت نشد.");
+//    }
 }

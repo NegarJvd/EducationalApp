@@ -93,7 +93,7 @@ class AdminController extends Controller
             'birth_date' => ['nullable'],
             'gender' => ['nullable', Rule::in(Admin::gender())],
             'address' => ['nullable', 'string', 'max:255'],
-            'landline_phone' => ['nullable', 'string', 'max:255'],
+            'landline_phone' => ['nullable', 'numeric', 'max:255'],
             'field_of_profession' => ['nullable', 'string', 'max:255'],
             'resume' => ['nullable', 'string'],
             'degree_of_education' => ['nullable', 'string', 'max:255'],
