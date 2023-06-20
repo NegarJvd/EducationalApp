@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\UploadController;
+//use App\Http\Controllers\UploadController;
+use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 //use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Morilog\Jalali\Jalalian;
-use Spatie\Permission\Models\Role;
 
 class HomeController extends Controller
 {
@@ -35,8 +36,6 @@ class HomeController extends Controller
 //        Artisan::call('storage:link');
 
         $users_count = User::count();
-//        $categories_count = Category::count();
-//        $videos_count = Video::count();
 
         return view('panel/home', compact('users_count'));
     }
@@ -89,10 +88,7 @@ class HomeController extends Controller
     public function show_profile(){
         $admin = Auth::user();
 
-        $roles = Role::where('id', '>', 1)->get();
-        $adminRole = $admin->roles->pluck('id')->all();
-
-        return view('panel.profile', compact('admin', 'roles', 'adminRole'));
+        return view('panel.profile', compact('admin'));
     }
 
     public function update_profile(Request $request){
@@ -100,23 +96,37 @@ class HomeController extends Controller
         $admin_array = $admin->toArray();
 
         $request->validate([
-            'name' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable','required_if:email,null','numeric','digits:11','regex:/^(09)/', 'unique:users,phone,'. $admin->id],
-            'landline_phone' => ['nullable','numeric'],
-            'username' => ['required', 'string', 'max:255', 'unique:admins,username,'.$admin->id],
-            'email' => ['nullable','required_if:phone,null', 'string', 'email', 'max:255', 'unique:users,email,'. $admin->id],
-            'gender' => ['nullable', 'in:male,female,other'],
-            'date_of_birth' => ['nullable'],
-            'avatar_id' => ['nullable', 'integer'],
-            'city_id' => ['nullable', Rule::in(City::pluck('id'))],
+            'first_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
+            'phone' => ['nullable', 'numeric','digits:11','regex:/^(09)/', 'unique:admins,phone,'. $admin->id],
+            'email'=> ['nullable', 'string', 'email', 'max:255', 'unique:admins,email,'. $admin->id],
+            'medical_system_number', ['nullable', 'unique:admins,medical_system_number,'. $admin->id],
+            'birth_date' => ['nullable'],
+            'gender' => ['nullable', Rule::in(Admin::gender())],
+            'address' => ['nullable', 'string', 'max:255'],
+            'landline_phone' => ['nullable', 'string', 'max:255'],
+            'field_of_profession' => ['nullable', 'string', 'max:255'],
+            'resume' => ['nullable', 'string'],
+            'degree_of_education' => ['nullable', 'string', 'max:255'],
         ]);
         $input = $request->all();
-        $input['date_of_birth'] = !is_null($request->get('date_of_birth')) ? timestamp_to_date($request->get('date_of_birth')) : $admin_array['date_of_birth'];
+        $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date')) : $admin_array['birth_date'];
 
         $input = array_merge($admin_array, $input);
 
-        if (is_null($input['avatar_id']) and !is_null($admin_array['avatar_id'])){
-            UploadController::delete($admin_array['avatar_id']);
+//        if (is_null($input['avatar_id']) and !is_null($admin_array['avatar_id'])){
+//            UploadController::delete($admin_array['avatar_id']);
+//        }
+
+        $validation = Validator::make($input, [
+            'first_name' => ['required'],
+            'last_name' => ['required'],
+            'phone' => ['required'],
+            'medical_system_number' => ['required'],
+        ]);
+
+        if ($validation->fails()) {
+            return redirect()->back()->withErrors($validation)->withInput();
         }
 
         $admin->update($input);

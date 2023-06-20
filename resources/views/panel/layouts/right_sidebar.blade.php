@@ -39,7 +39,7 @@
                                 @can('user-list')
                                 <li class="">
                                     <a class="sidenav-item-link" href="{{url('/panel/users')}}">
-                                        <span class="nav-text">کاربران</span>
+                                        <span class="nav-text">مراجعه کننده ها</span>
                                     </a>
                                 </li>
                                 @endcan
@@ -56,14 +56,6 @@
                                 <li class="">
                                     <a class="sidenav-item-link" href="{{url('/panel/roles')}}">
                                         <span class="nav-text">نقش ها</span>
-                                    </a>
-                                </li>
-                                @endcan
-
-                                @can('permission-list')
-                                <li class="">
-                                    <a class="sidenav-item-link" href="{{url('/panel/permissions')}}">
-                                        <span class="nav-text">دسترسی ها</span>
                                     </a>
                                 </li>
                                 @endcan

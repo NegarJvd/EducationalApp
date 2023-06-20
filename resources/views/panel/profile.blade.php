@@ -40,8 +40,8 @@
 
                         <div class="card-body">
                             <h4 class="py-2 text-dark">{{$admin->name}}</h4>
+                            <p>{{$admin->medical_system_number}}</p>
                             <p>{{$admin->phone}}</p>
-                            <p>{{$admin->email}}</p>
                         </div>
                     </div>
 
@@ -58,12 +58,9 @@
                                 <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">اطلاعات فردی</a>
                             </li>
 
-
-                        @can('change_admin_role')
                             <li class="nav-item">
-                                <a class="nav-link" id="role-tab" data-toggle="tab" href="#role" role="tab" aria-controls="role" aria-selected="false">نقش</a>
+                                <a class="nav-link" id="more_info-tab" data-toggle="tab" href="#more_info" role="tab" aria-controls="more_info" aria-selected="false">اطلاعات کاری</a>
                             </li>
-                        @endcan
 
                     </ul>
 
@@ -78,11 +75,22 @@
 
                                     <div class="form-group row">
                                         <div class="col-12 col-md-2 text-left">
-                                            <label for="name">نام</label>
+                                            <label for="first_name">نام</label>
                                         </div>
 
                                         <div class="col-12 col-md-7">
-                                            {!! Form::text('name', null, array('class' => 'form-control', 'id'=>'name')) !!}
+                                            {!! Form::text('first_name', null, array('class' => 'form-control', 'id'=>'first_name', 'required' => 'required')) !!}
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-12 col-md-2 text-left">
+                                            <label for="last_name">نام خانوادگی</label>
+                                        </div>
+
+                                        <div class="col-12 col-md-7">
+                                            {!! Form::text('last_name', null, array('class' => 'form-control', 'id'=>'last_name', 'required' => 'required')) !!}
                                         </div>
 
                                     </div>
@@ -93,7 +101,7 @@
                                         </div>
 
                                         <div class="col-12 col-md-7">
-                                            {!! Form::text('phone', null, array('class' => 'form-control', 'id'=>'phone')) !!}
+                                            {!! Form::text('phone', null, array('class' => 'form-control', 'id'=>'phone', 'required' => 'required')) !!}
                                         </div>
                                     </div>
 
@@ -129,20 +137,30 @@
                                                 <option value=""></option>
                                                 <option value="male" {{$admin->gender == 'male'? 'selected': ''}}>مرد</option>
                                                 <option value="female" {{$admin->gender == 'female'? 'selected': ''}}>زن</option>
-                                                <option value="other" {{$admin->gender == 'other'? 'selected': ''}}>سایر</option>
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <div class="col-12 col-md-2 text-left">
-                                            <label for="date_of_birth">تاریخ تولد</label>
+                                            <label for="birth_date">تاریخ تولد</label>
                                         </div>
 
                                         <div class="col-12 col-md-7">
-                                            <input type="text" class="form-control" id="date_of_birth" value="{{$admin->date_of_birth}}" autocomplete="off">
-                                            <input type="text" class="form-control" name="date_of_birth" id="alt_date_of_birth" value="{{strtotime($admin->date_of_birth)}}" hidden>
+                                            <input type="text" class="form-control" id="birth_date" value="{{$admin->birth_date}}" autocomplete="off">
+                                            <input type="text" class="form-control" name="birth_date" id="alt_birth_date" value="{{strtotime($admin->birth_date)}}" hidden>
                                         </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-12 col-md-2 text-left">
+                                            <label for="address">آدرس</label>
+                                        </div>
+
+                                        <div class="col-12 col-md-7">
+                                            {!! Form::text('address', null, array('class' => 'form-control', 'id'=>'address')) !!}
+                                        </div>
+
                                     </div>
 
                                     <div class="d-flex justify-content-center mt-5">
@@ -156,52 +174,74 @@
                                 </div>
                             </div>
 
-                        @can('change_admin_role')
-                            <div class="tab-pane fade" id="role" role="tabpanel" aria-labelledby="role-tab">
+                            <div class="tab-pane fade" id="more_info" role="tabpanel" aria-labelledby="more_info-tab">
                                 <div class="tab-pane-content mt-5">
 
                                     @include('panel.panel_message')
 
-                                    {!! Form::open(['method' => 'POST','route' =>'panel.change_admin_role']) !!}
+                                    {!! Form::model($admin, ['method' => 'PATCH','route' => 'panel.profile']) !!}
 
                                     <div class="form-group row">
                                         <div class="col-12 col-md-2 text-left">
-                                            <label for="roles">نقش ها</label>
+                                            <label for="medical_system_number">کد نظام پزشکی</label>
                                         </div>
 
                                         <div class="col-12 col-md-7">
-                                            @if(in_array(1, $adminRole))
-                                                <strong>{{\Spatie\Permission\Models\Role::findById(1)->name}}</strong>
-                                            @else
-
-                                            <input value="{{$admin->id}}" name="user_id" hidden>
-                                            <select class="form-control" id="roles" name="roles_id[]">
-                                                <option></option>
-                                                @foreach($roles as $role)
-                                                    <option value="{{$role->id}}" @if(in_array($role->id, $adminRole)) selected @endif>{{$role->name}}</option>
-                                                @endforeach
-                                            </select>
-
-                                            @endif
+                                            {!! Form::text('medical_system_number', null, array('class' => 'form-control', 'id'=>'medical_system_number', 'required' => 'required')) !!}
                                         </div>
 
                                     </div>
 
-                                    @if(!in_array(1, $adminRole))
+                                    <div class="form-group row">
+                                        <div class="col-12 col-md-2 text-left">
+                                            <label for="field_of_profession">حیطه کاری</label>
+                                        </div>
+
+                                        <div class="col-12 col-md-7">
+                                            {!! Form::text('field_of_profession', null, array('class' => 'form-control', 'id'=>'field_of_profession')) !!}
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-12 col-md-2 text-left">
+                                            <label for="resume">سوابق کاری</label>
+                                        </div>
+
+                                        <div class="col-12 col-md-7">
+                                            {!! Form::text('resume', null, array('class' => 'form-control', 'id'=>'resume')) !!}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-12 col-md-2 text-left">
+                                            <label for="degree_of_education">مدرک تحصیلی</label>
+                                        </div>
+
+                                        <div class="col-12 col-md-7">
+                                            <select class="form-control" id="degree_of_education" name="degree_of_education">
+                                                <option value=""></option>
+                                                @foreach(\App\Models\Admin::degree_of_education() as $degree)
+                                                    <option value={{$degree}} {{$admin->degree_of_education == $degree ? 'selected': ''}}>
+                                                        {{$degree}}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
 
                                     <div class="d-flex justify-content-center mt-5">
                                         <button type="submit" class="ladda-button btn btn-primary mb-2 btn-pill">
-                                            <span class="ladda-label">تغيير نقش</span>
+                                            <span class="ladda-label">ویرایش</span>
                                             <span class="ladda-spinner"></span>
                                         </button>
                                     </div>
 
-                                    @endif
-
                                     {!! Form::close() !!}
+
+
                                 </div>
                             </div>
-                        @endcan
 
                     </div>
                 </div>
@@ -249,21 +289,21 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            var initial_date = $('#alt_date_of_birth').val();
+            var initial_date = $('#alt_birth_date').val();
             if(initial_date){
-                $("#date_of_birth").pDatepicker({
+                $("#birth_date").pDatepicker({
                     autoClose: true,
                     initialValueType: 'gregorian',
                     format: 'YYYY/MM/DD',
-                    altField: '#alt_date_of_birth',
+                    altField: '#alt_birth_date',
                 })
             }else{
-                $("#date_of_birth").pDatepicker({
+                $("#birth_date").pDatepicker({
                     autoClose: true,
                     initialValue: false,
                     initialValueType: 'gregorian',
                     format: 'YYYY/MM/DD',
-                    altField: '#alt_date_of_birth',
+                    altField: '#alt_birth_date',
                 });
             }
 

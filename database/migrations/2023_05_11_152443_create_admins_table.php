@@ -14,15 +14,20 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
+            $table->enum('status', Admin::status())->default(Admin::status()[0]);
             $table->string('first_name');
             $table->string('last_name');
             $table->string('phone')->unique();
             $table->string('email')->unique()->nullable();
+            $table->string('medical_system_number')->unique();
             $table->date('birth_date')->nullable();
             $table->enum('gender', Admin::gender())->nullable();
             $table->string('address')->nullable();
             $table->string('landline_phone')->nullable();
             $table->string('password')->nullable();
+            $table->string('field_of_profession')->nullable();
+            $table->text('resume')->nullable();
+            $table->string('degree_of_education')->nullable();
 
             $table->rememberToken();
             $table->timestamps();
