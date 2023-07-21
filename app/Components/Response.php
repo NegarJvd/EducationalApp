@@ -13,7 +13,7 @@ trait Response
      * @param int $code
      * @return JsonResponse
      */
-    protected function success($data, $message = null, $code = 1)
+    protected function customSuccess($data, $message = null, $code = 1)
     {
         return response()->json([
             'code' => $code,
@@ -28,7 +28,7 @@ trait Response
      * @param int $code
      * @return JsonResponse
      */
-    protected function customError($message, $status = 200, $code = 0)
+    protected function customError($message, $status = 403, $code = 0)
     {
         return response()->json([
             'code' => $code,
