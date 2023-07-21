@@ -47,5 +47,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ContentSeeder::class);
         $this->call(ClusterSeeder::class);
         $this->call(StepSeeder::class);
+        $this->call(ActionSeeder::class);
     }
 }

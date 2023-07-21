@@ -10,7 +10,7 @@ class Action extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'steps';
+    protected $table = 'actions';
     protected $primaryKey = 'id';
 
     protected $fillable = [
