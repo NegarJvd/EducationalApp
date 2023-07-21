@@ -67,4 +67,14 @@ class User extends Authenticatable
         return ['male', 'female'];
     }
 
+    public function contents(){
+        return $this->belongsToMany(Content::class, 'content_user', 'user_id', 'content_id')
+            ->withPivot('cluster_id');
+    }
+
+    public function clusters(){
+        return $this->belongsToMany(Cluster::class, 'content_user', 'user_id', 'cluster_id')
+            ->withPivot('content_id');
+    }
+
 }
