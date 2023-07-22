@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AdminResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -186,5 +187,10 @@ class AuthController extends Controller
         $user->update($new_data);
 
         return $this->customSuccess(UserResource::make($user), "اطلاعات کابر با موفقیت به روز رسانی شد.");
+    }
+
+    public function therapist_info(){
+        $user = Auth::user();
+        return $this->customSuccess(AdminResource::make($user->admin), "اطلاعات درمانگر");
     }
 }

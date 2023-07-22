@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('profile', [AuthController::class, 'update_profile']);
     Route::put('change_password', [AuthController::class, 'changePassword']);
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('therapist_info', [AuthController::class, 'therapist_info']);
 
     //contents
     Route::get('contents', [ContentController::class, 'contents_list']);
