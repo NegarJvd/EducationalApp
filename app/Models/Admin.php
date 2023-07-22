@@ -67,4 +67,8 @@ class Admin extends Authenticatable
         return ["کارشناسی", "ارشد", "دکتری"];
     }
 
+    public function users(){
+        return $this->hasMany(User::class, 'admin_id');
+    }
+
 }

@@ -38,7 +38,8 @@ class User extends Authenticatable
         'father_name',
         'mother_name',
         'first_visit',
-        'diagnosis'
+        'diagnosis',
+        'admin_id'
     ];
 
     /**
@@ -65,6 +66,10 @@ class User extends Authenticatable
 
     public static function gender(){
         return ['male', 'female'];
+    }
+
+    public function admin(){
+        return $this->belongsTo(Admin::class, 'admin_id');
     }
 
     public function contents(){
