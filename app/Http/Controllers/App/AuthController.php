@@ -191,6 +191,9 @@ class AuthController extends Controller
 
     public function therapist_info(){
         $user = Auth::user();
-        return $this->customSuccess(AdminResource::make($user->admin), "اطلاعات درمانگر");
+        $admin = $user->admin;
+
+        if(!$admin) return $this->customError("درمانگری برای شما اختصاص نیافته است. لطفا برای اختصاص درمانگر، شکیبا باشید.");
+        return $this->customSuccess(AdminResource::make($admin), "اطلاعات درمانگر");
     }
 }
