@@ -77,4 +77,7 @@ class User extends Authenticatable
             ->withPivot('content_id');
     }
 
+    public function actions(){
+        return $this->hasMany(Action::class, 'user_id');
+    }
 }

@@ -18,7 +18,7 @@ class Content extends Model
     ];
 
     public function cover(){
-        return $this->hasOne(File::class, 'cover_id');
+        return $this->belongsTo(File::class, 'cover_id');
     }
 
     public function clusters(){

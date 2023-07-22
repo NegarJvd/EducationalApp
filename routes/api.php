@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\App\AuthController;
+use App\Http\Controllers\App\ContentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,4 +28,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('change_password', [AuthController::class, 'changePassword']);
     Route::post('logout', [AuthController::class, 'logout']);
 
+    //contents
+    Route::get('contents', [ContentController::class, 'contents_list']);
+    Route::get('contents/{content_id}', [ContentController::class, 'cluster_detail']);
+    Route::post('store_action', [ContentController::class, 'store_action']);
 });

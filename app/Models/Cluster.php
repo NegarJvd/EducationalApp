@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static find($cluster_id)
+ */
 class Cluster extends Model
 {
     use HasFactory, SoftDeletes;
@@ -18,7 +21,7 @@ class Cluster extends Model
     ];
 
     public function cover(){
-        return $this->hasOne(File::class, 'cover_id');
+        return $this->belongsTo(File::class, 'cover_id');
     }
 
     public function content(){

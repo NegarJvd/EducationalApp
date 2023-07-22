@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static pluck(string $string)
+ */
 class Step extends Model
 {
     use HasFactory, SoftDeletes;
@@ -18,11 +21,11 @@ class Step extends Model
     ];
 
     public function cover(){
-        return $this->hasOne(File::class, 'cover_id');
+        return $this->belongsTo(File::class, 'cover_id');
     }
 
     public function video(){
-        return $this->hasOne(File::class, 'video_id');
+        return $this->belongsTo(File::class, 'video_id');
     }
 
     public function cluster(){
