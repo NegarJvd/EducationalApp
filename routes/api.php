@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\App\ActionController;
 use App\Http\Controllers\App\AuthController;
 use App\Http\Controllers\App\ContentController;
 use Illuminate\Support\Facades\Route;
@@ -32,5 +33,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //contents
     Route::get('contents', [ContentController::class, 'contents_list']);
     Route::get('contents/{content_id}', [ContentController::class, 'cluster_detail']);
-    Route::post('store_action', [ContentController::class, 'store_action']);
+
+    //actions
+    Route::post('store_action', [ActionController::class, 'store_action']);
+    Route::post('evaluation', [ActionController::class, 'evaluation']);
 });
