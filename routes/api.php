@@ -3,6 +3,7 @@
 use App\Http\Controllers\App\ActionController;
 use App\Http\Controllers\App\AuthController;
 use App\Http\Controllers\App\ContentController;
+use App\Http\Controllers\App\TicketController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,4 +38,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //actions
     Route::post('store_action', [ActionController::class, 'store_action']);
     Route::post('evaluation', [ActionController::class, 'evaluation']);
+
+    //tickets
+    Route::get('tickets', [TicketController::class, 'get_list_of_tickets']);
+    Route::post('tickets', [TicketController::class, 'store_ticket']);
 });
