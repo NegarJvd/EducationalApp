@@ -44,9 +44,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('tickets', [TicketController::class, 'store_ticket']);
 });
 
-Route::get('test', function (){
-    $user = \App\Models\User::first();
-    $user->password = \Illuminate\Support\Facades\Hash::make("password");
-    $user->save();
-    return $user;
-});
+//Route::get('test', function (){
+//    $user = \App\Models\User::first();
+//    $user->password = \Illuminate\Support\Facades\Hash::make("password");
+//    $user->save();
+//    return $user;
+//});
