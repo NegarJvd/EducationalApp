@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Negar\Smsirlaravel\Smsirlaravel;
+//use Negar\Smsirlaravel\Smsirlaravel;
 
 
 class AuthController extends Controller
@@ -52,7 +52,7 @@ class AuthController extends Controller
 
         $password = "1234";//rand(11111, 99999);
         Redis::set($user->phone, Hash::make($password), 'EX', 300); //expire in 5 min
-        Smsirlaravel::ultraFastSend(['otp'=>$password],$this->sms_template('otp'),$user->phone); //TODO
+//        Smsirlaravel::ultraFastSend(['otp'=>$password],$this->sms_template('otp'),$user->phone); //TODO
 
         return $this->customSuccess($request->get('phone'), 'رمز یکبار مصرف برای ' . $request->get('phone') . ' ارسال شد.');
     }
@@ -102,7 +102,7 @@ class AuthController extends Controller
         $verification_code = rand(11111, 99999);
         Redis::set('verification_' . $user->phone, Hash::make($verification_code), 'EX', 300); //expire in 5 min
         //TODO
-        Smsirlaravel::ultraFastSend(['verification_code'=>$verification_code],$this->sms_template('verification_code'),$user->phone);
+//        Smsirlaravel::ultraFastSend(['verification_code'=>$verification_code],$this->sms_template('verification_code'),$user->phone);
 
         return $this->customSuccess($request->get('phone'), 'کد تایید برای ' . $request->get('phone') . ' ارسال شد.');
     }

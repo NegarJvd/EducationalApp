@@ -187,7 +187,7 @@ return [
          */
 
         Spatie\Permission\PermissionServiceProvider::class,
-        Negar\Smsirlaravel\SmsirlaravelServiceProvider::class,
+//        Negar\Smsirlaravel\SmsirlaravelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -216,7 +216,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
-        'Smsirlaravel' => Negar\Smsirlaravel\SmsirlaravelFacade::class,
+//        'Smsirlaravel' => Negar\Smsirlaravel\SmsirlaravelFacade::class,
     ])->toArray(),
 
 ];
