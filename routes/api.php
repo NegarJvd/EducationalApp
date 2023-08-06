@@ -46,7 +46,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 Route::get('test', function (){
     $user = \App\Models\User::first();
-    $user->password = "password";
+    $user->password = \Illuminate\Support\Facades\Hash::make("password");
     $user->save();
     return $user;
 });
