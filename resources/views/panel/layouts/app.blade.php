@@ -104,11 +104,6 @@
         <script src="{{asset('assets/plugins/ladda/spin.min.js')}}"></script>
         <script src="{{asset('assets/plugins/ladda/ladda.min.js')}}"></script>
 
-
-        <script src='{{asset('assets/plugins/charts/Chart.min.js')}}'></script>
-
-        <script src='{{asset('js/custom_js/dashboard.js')}}'></script>
-
 {{--        <script src='{{asset('assets/plugins/toastr/toastr.min.js')}}'></script>   for notification--}}
 
         <script src="{{asset('js/app.js')}}"></script>

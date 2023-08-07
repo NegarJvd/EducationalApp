@@ -57,3 +57,9 @@
     </div>
 
 @endsection
+
+@section('scripts')
+    <script src='{{asset('assets/plugins/charts/Chart.min.js')}}'></script>
+
+    <script src='{{asset('js/custom_js/dashboard.js')}}'></script>
+@endsection

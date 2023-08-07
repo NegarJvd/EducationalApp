@@ -19,11 +19,11 @@ if (!function_exists('cast_to_number')) {
 }
 
 if (!function_exists('timestamp_to_date')) {
-    function timestamp_to_date($timestamp)
+    function timestamp_to_date($timestamp, $format = "Y-m-d H:i:s")
     {
         $timestamp = substr($timestamp, 0, -3);
         $int_alt_Field = cast_to_number($timestamp);
-        return date("Y-m-d H:i:s", $int_alt_Field);
+        return date($format, $int_alt_Field);
     }
 }
 

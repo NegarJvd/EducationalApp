@@ -75,7 +75,7 @@
 
                                     <div class="form-group row">
                                         <div class="col-12 col-md-2 text-left">
-                                            <label for="first_name">نام</label>
+                                            <label for="first_name">نام<b class="text-primary">*</b></label>
                                         </div>
 
                                         <div class="col-12 col-md-7">
@@ -86,7 +86,7 @@
 
                                     <div class="form-group row">
                                         <div class="col-12 col-md-2 text-left">
-                                            <label for="last_name">نام خانوادگی</label>
+                                            <label for="last_name">نام خانوادگی<b class="text-primary">*</b></label>
                                         </div>
 
                                         <div class="col-12 col-md-7">
@@ -97,7 +97,7 @@
 
                                     <div class="form-group row">
                                         <div class="col-12 col-md-2 text-left">
-                                            <label for="phone">شماره همراه</label>
+                                            <label for="phone">شماره همراه<b class="text-primary">*</b></label>
                                         </div>
 
                                         <div class="col-12 col-md-7">
@@ -183,7 +183,7 @@
 
                                     <div class="form-group row">
                                         <div class="col-12 col-md-2 text-left">
-                                            <label for="medical_system_number">کد نظام پزشکی</label>
+                                            <label for="medical_system_number">کد نظام پزشکی<b class="text-primary">*</b></label>
                                         </div>
 
                                         <div class="col-12 col-md-7">

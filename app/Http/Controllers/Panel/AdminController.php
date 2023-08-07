@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 //use Negar\Smsirlaravel\Smsirlaravel;
@@ -37,12 +38,6 @@ class AdminController extends Controller
         $this->middleware('permission:change-admin-status', ['only' => ['change_admin_status']]);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return Application|Factory|View
-     */
     public function index(Request $request)
     {
         $data = Admin::query();
@@ -63,11 +58,6 @@ class AdminController extends Controller
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Application|Factory|View
-     */
     public function create()
     {
         $roles = Role::where('id', '>', 1)->get();
@@ -75,34 +65,26 @@ class AdminController extends Controller
         return view('panel.admins.create', compact('roles'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return RedirectResponse
-     * @throws ValidationException
-     */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'numeric','digits:11','regex:/^(09)/', 'unique:admins,phone'],
             'email'=> ['nullable', 'string', 'email', 'max:255', 'unique:admins,email'],
-            'medical_system_number', ['required', 'unique:admins,medical_system_number'],
+            'medical_system_number' => ['required', 'unique:admins,medical_system_number'],
             'birth_date' => ['nullable'],
             'gender' => ['nullable', Rule::in(Admin::gender())],
             'address' => ['nullable', 'string', 'max:255'],
-            'landline_phone' => ['nullable', 'numeric', 'max:255'],
+            'landline_phone' => ['nullable', 'numeric'],
             'field_of_profession' => ['nullable', 'string', 'max:255'],
             'resume' => ['nullable', 'string'],
             'degree_of_education' => ['nullable', 'string', 'max:255'],
-//            'avatar_id' => ['nullable', Rule::in(Upload::pluck('id'))],
             'role' => ['nullable', Rule::in(Role::pluck('name'))]
         ]);
 
         $input = $request->all();
-        $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date')) : null;
+        $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date'), "Y-m-d") : null;
         $input['status'] = Admin::status()[1];
 
         DB::beginTransaction();
@@ -131,23 +113,11 @@ class AdminController extends Controller
             ->with('success','مدیر با موفقیت ایجاد شد.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param Admin $admin
-     * @return Application|Factory|View
-     */
     public function show(Admin $admin)
     {
         return view('panel.admins.show',compact('admin'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Admin $admin
-     * @return Application|Factory|View
-     */
     public function edit(Admin $admin)
     {
         $roles = Role::where('id', '>', 1)->get();
@@ -156,49 +126,48 @@ class AdminController extends Controller
         return view('panel.admins.edit',compact('admin','roles','adminRole'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param $id
-     * @return RedirectResponse
-     * @throws ValidationException
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'numeric','digits:11','regex:/^(09)/', 'unique:admins,phone,'.$id],
+            'first_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
+            'phone' => ['nullable', 'numeric','digits:11','regex:/^(09)/', 'unique:admins,phone,'.$id],
             'email'=> ['nullable', 'string', 'email', 'max:255', 'unique:admins,email,'.$id],
-            'medical_system_number', ['required', 'unique:admins,medical_system_number'],
+            'medical_system_number' => ['nullable', 'unique:admins,medical_system_number'],
             'birth_date' => ['nullable'],
             'gender' => ['nullable', Rule::in(Admin::gender())],
             'address' => ['nullable', 'string', 'max:255'],
-            'landline_phone' => ['nullable', 'string', 'max:255'],
+            'landline_phone' => ['nullable', 'numeric'],
             'field_of_profession' => ['nullable', 'string', 'max:255'],
             'resume' => ['nullable', 'string'],
             'degree_of_education' => ['nullable', 'string', 'max:255'],
 //            'avatar_id' => ['nullable', Rule::in(Upload::pluck('id'))],
         ]);
+
         $admin = Admin::find($id);
+        $admin_array = $admin->toArray();
 
         $input = $request->all();
         $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date')) : $admin->birth_date;
 
+        $input = array_merge($admin_array, $input);
+
+        $validation = Validator::make($input, [
+            'first_name' => ['required'],
+            'last_name' => ['required'],
+            'phone' => ['required'],
+            'medical_system_number' => ['required'],
+        ]);
+
+        if ($validation->fails()) {
+            return redirect()->back()->withErrors($validation)->withInput();
+        }
+
         $admin->update($input);
 
-        return redirect()->route('panel.admins.index')
-            ->with('success','مدیر با موفقیت ویرایش شد.');
+        return redirect()->back()->with('success','مدیر با موفقیت ویرایش شد.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param admin $admin
-     * @return RedirectResponse
-     * @throws Exception
-     */
     public function destroy(Admin $admin)
     {
         $admin->delete();
@@ -209,17 +178,17 @@ class AdminController extends Controller
     public function change_admin_role(Request $request){
         $request->validate([
             'admin_id' => ['required', Rule::in(Admin::pluck('id'))],
-            'roles_id' => ['present', 'array'],
-            'roles_id.*' => ['nullable', Rule::in(Role::pluck('id'))],
+//            'roles_id' => ['present', 'array'],
+            'roles_id' => ['required', Rule::in(Role::pluck('id'))],
         ]);
 
         $admin = Admin::find($request->get('admin_id'));
 
         DB::table('model_has_roles')->where('model_id',$admin->id)->delete();
 
-        $admin->assignRole($request->get('roles_id'));
+        $admin->assignRole([$request->get('roles_id')]);
 
-        return redirect()->route('panel.admins.index')
+        return redirect()->back()
             ->with('success','نقش مدیر با موفقيت تغيير يافت.');
     }
 

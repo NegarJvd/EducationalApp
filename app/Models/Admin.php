@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @method static where(string $string, $get)
  * @method static create(array $array)
+ * @method static find($id)
  */
 class Admin extends Authenticatable
 {
