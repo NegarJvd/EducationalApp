@@ -39,7 +39,18 @@
                         </div>
 
                         <div class="card-body">
-                            <h4 class="py-2 text-dark">{{$admin->name}}</h4>
+                            <h4 class="py-2 text-dark">
+                                @switch($admin->status)
+                                    @case("active")
+                                    <span class="mdi mdi-check-circle-outline text-success" title="فعال"></span>
+                                    @break
+
+                                    @case("inactive")
+                                    <span class="mdi mdi-close-circle-outline text-danger" title="غیر فعال"></span>
+                                    @break
+                                @endswitch
+                                {{$admin->name}}
+                            </h4>
                             <p>{{$admin->phone}}</p>
                             <p>{{$admin->email}}</p>
                         </div>
@@ -65,6 +76,10 @@
                             <li class="nav-item">
                                 <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">اطلاعات فردی</a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" id="more_info-tab" data-toggle="tab" href="#more_info" role="tab" aria-controls="more_info" aria-selected="false">اطلاعات کاری</a>
+                            </li>
                         @endcan
 
                         @can('role-list')
@@ -83,11 +98,22 @@
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
-                                        <label for="name">نام</label>
+                                        <label for="first_name">نام</label>
                                     </div>
 
                                     <div class="col-12 col-md-7">
-                                        <strong id="name">{{$admin->name}}</strong>
+                                        <strong id="first_name">{{$admin->first_name}}</strong>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="last_name">نام خانوادگی</label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        <strong id="last_name">{{$admin->last_name}}</strong>
                                     </div>
 
                                 </div>
@@ -101,6 +127,18 @@
                                         <strong id="phone">{{$admin->phone}}</strong>
                                     </div>
                                 </div>
+
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="landline_phone">تلفن ثابت</label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        <strong id="landline_phone">{{$admin->landline_phone}}</strong>
+                                    </div>
+                                </div>
+
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
@@ -119,38 +157,84 @@
 
                                     <div class="col-12 col-md-7">
                                         <strong id="gender">
-                                        @switch($admin->gender)
-                                            @case('male')
-                                            مرد
+                                            @switch($admin->gender)
+                                                @case('male')
+                                                مرد
                                                 @break
-                                            @case('female')
-                                            زن
+                                                @case('female')
+                                                زن
                                                 @break
-                                            @case('other')
-                                            سایر
-                                                @break
-                                        @endswitch
+                                            @endswitch
                                         </strong>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
-                                        <label for="date_of_birth">تاریخ تولد</label>
+                                        <label for="birth_date">تاریخ تولد</label>
                                     </div>
 
                                     <div class="col-12 col-md-7">
-                                        <strong id="date_of_birth">{{$admin->date_of_birth ? \Morilog\Jalali\Jalalian::forge($admin->date_of_birth)->format('%Y/%m/%d') : ''}}</strong>
+                                        <strong id="birth_date">{{$admin->birth_date ? \Morilog\Jalali\Jalalian::forge($admin->birth_date)->format('%Y/%m/%d') : ''}}</strong>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
-                                        <label for="city_id">شهر</label>
+                                        <label for="address">آدرس</label>
                                     </div>
 
                                     <div class="col-12 col-md-7">
-                                        <strong id="city_id">{{@$admin->city->name}} {{@$admin->city->state ? (' - ' . @$admin->city->state->name) : ''}}</strong>
+                                        <strong id="address">{{$admin->address}}</strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="more_info" role="tabpanel" aria-labelledby="more_info-tab">
+                            <div class="tab-pane-content mt-5">
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="medical_system_number">کد نظام پزشکی</label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        <strong id="medical_system_number">{{$admin->medical_system_number}}</strong>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="field_of_profession">حیطه کاری</label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        <strong id="field_of_profession">{{$admin->field_of_profession}}</strong>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="resume">سوابق کاری</label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        <strong id="resume">{{$admin->resume}}</strong>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="degree_of_education">مدرک تحصیلی</label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        <strong id="degree_of_education">{{$admin->degree_of_education}}</strong>
                                     </div>
                                 </div>
 
@@ -160,31 +244,24 @@
 
                         @can('role-list')
                             <div class="tab-pane fade" id="role" role="tabpanel" aria-labelledby="role-tab">
-                                    <div class="tab-pane-content mt-5">
-
-                                        @include('panel.panel_message')
-
-                                        <div class="tab-pane-content mt-5">
-
-                                            <div class="form-group row">
-                                                <div class="col-12 col-md-2 text-left">
-                                                    <label for="roles">نقش</label>
-                                                </div>
-
-                                                <div class="col-12 col-md-7">
-
-                                                    <ul>
-                                                    @foreach($admin->getRoleNames() as $v)
-                                                        <li id="roles"><strong>{{ $v }}</strong></li>
-                                                    @endforeach
-                                                    </ul>
-                                                </div>
-
-                                            </div>
-
+                                <div class="tab-pane-content mt-5">
+                                    <div class="form-group row">
+                                        <div class="col-12 col-md-2 text-left">
+                                            <label for="roles">نقش</label>
                                         </div>
+
+                                        <div class="col-12 col-md-7">
+
+                                            <ul>
+                                            @foreach($admin->getRoleNames() as $v)
+                                                <li id="roles"><strong>{{ $v }}</strong></li>
+                                            @endforeach
+                                            </ul>
+                                        </div>
+
                                     </div>
                                 </div>
+                            </div>
                         @endcan
 
                     </div>
@@ -192,18 +269,4 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('scripts')
-    <script>
-        $(document).ready(function(){
-            $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
-                localStorage.setItem('activeTab', $(e.target).attr('href'));
-            });
-            var activeTab = localStorage.getItem('activeTab');
-            if(activeTab){
-                $('#myTab a[href="' + activeTab + '"]').tab('show');
-            }
-        });
-    </script>
 @endsection

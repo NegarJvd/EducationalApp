@@ -133,7 +133,7 @@ class AdminController extends Controller
             'last_name' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'numeric','digits:11','regex:/^(09)/', 'unique:admins,phone,'.$id],
             'email'=> ['nullable', 'string', 'email', 'max:255', 'unique:admins,email,'.$id],
-            'medical_system_number' => ['nullable', 'unique:admins,medical_system_number'],
+            'medical_system_number' => ['nullable', 'unique:admins,medical_system_number,' .$id],
             'birth_date' => ['nullable'],
             'gender' => ['nullable', Rule::in(Admin::gender())],
             'address' => ['nullable', 'string', 'max:255'],
@@ -168,12 +168,12 @@ class AdminController extends Controller
         return redirect()->back()->with('success','مدیر با موفقیت ویرایش شد.');
     }
 
-    public function destroy(Admin $admin)
-    {
-        $admin->delete();
-        return redirect()->route('panel.admins.index')
-            ->with('success','مدیر با موفقیت حذف شد.');
-    }
+//    public function destroy(Admin $admin)
+//    {
+//        $admin->delete();
+//        return redirect()->route('panel.admins.index')
+//            ->with('success','مدیر با موفقیت حذف شد.');
+//    }
 
     public function change_admin_role(Request $request){
         $request->validate([
@@ -192,23 +192,23 @@ class AdminController extends Controller
             ->with('success','نقش مدیر با موفقيت تغيير يافت.');
     }
 
-    public function search_in_admins_list_json(Request $request){
-        $query = Admin::select('id', 'first_name', 'last_name', 'medical_system_number', 'phone', 'email');
-
-        $keyword = $request->get('q');
-        if (!empty($keyword)) {
-            $query->where(function($query) use($keyword){
-                $query->where('first_name', 'LIKE', "%$keyword%")
-                    ->orWhere('last_name', 'LIKE', "%$keyword%")
-                    ->orWhere('medical_system_number', 'LIKE', "%$keyword%")
-                    ->orWhere('phone', 'LIKE', "%$keyword%")
-                    ->orWhere('email', 'LIKE', "%$keyword%");
-            });
-        }
-
-        $admins = $query->paginate($this->perPagePanel);
-        return response($admins);
-    }
+//    public function search_in_admins_list_json(Request $request){
+//        $query = Admin::select('id', 'first_name', 'last_name', 'medical_system_number', 'phone', 'email');
+//
+//        $keyword = $request->get('q');
+//        if (!empty($keyword)) {
+//            $query->where(function($query) use($keyword){
+//                $query->where('first_name', 'LIKE', "%$keyword%")
+//                    ->orWhere('last_name', 'LIKE', "%$keyword%")
+//                    ->orWhere('medical_system_number', 'LIKE', "%$keyword%")
+//                    ->orWhere('phone', 'LIKE', "%$keyword%")
+//                    ->orWhere('email', 'LIKE', "%$keyword%");
+//            });
+//        }
+//
+//        $admins = $query->paginate($this->perPagePanel);
+//        return response($admins);
+//    }
 
     public function change_admin_status($admin_id){
         $admin = Admin::find($admin_id);
