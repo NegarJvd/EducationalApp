@@ -1,0 +1,24 @@
+{
+    "name": "Negar/Smsirlaravel",
+    "description": "Official Sms.ir Laravel Package",
+    "keywords": ["laravel", "sms", "پیامک", "اس ام اس", "sendsms", "notifacation", "sms.ir"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Negar.Javadzadeh",
+            "email": "negarjavadzadeh2000@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Negar\\smsirlaravel\\SmsirlaravelServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Negar\\smsirlaravel\\": "src/"
+        }
+    }
+}
