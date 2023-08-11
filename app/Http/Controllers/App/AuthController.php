@@ -50,7 +50,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $password = "1234";//rand(11111, 99999);
+        $password = "1234";//rand(1111, 9999);
         Redis::set($user->phone, Hash::make($password), 'EX', 300); //expire in 5 min
 //        Smsirlaravel::ultraFastSend(['otp'=>$password],$this->sms_template('otp'),$user->phone); //TODO
 
@@ -99,7 +99,7 @@ class AuthController extends Controller
 
         if (!$user) return $this->customError("کاربر یافت نشد.");
 
-        $verification_code = rand(11111, 99999);
+        $verification_code = "1234"; //rand(1111, 9999);
         Redis::set('verification_' . $user->phone, Hash::make($verification_code), 'EX', 300); //expire in 5 min
         //TODO
 //        Smsirlaravel::ultraFastSend(['verification_code'=>$verification_code],$this->sms_template('verification_code'),$user->phone);
