@@ -33,7 +33,7 @@
 
 $(document).ready(function() {
   "use strict";
-  
+
   /*======== 1. DUAL LINE CHART ========*/
   var dual = document.getElementById("dual-line");
   if (dual !== null) {
@@ -225,18 +225,18 @@ $(document).ready(function() {
             backgroundColor: "transparent",
             borderColor: "rgb(82, 136, 255)",
             data: [
-              100,
-              11000,
-              10000,
-              14000,
-              11000,
-              17000,
-              14500,
-              18000,
-              5000,
-              23000,
-              14000,
-              19000
+              1,
+              1.3,
+              0.6,
+              2.1,
+              1.8,
+              0.9,
+              2,
+              1.3,
+              1.5,
+              0.8,
+              0.2,
+              1
             ],
             lineTension: 0.3,
             pointRadius: 5,
@@ -304,7 +304,7 @@ $(document).ready(function() {
               return data["labels"][tooltipItem[0]["index"]];
             },
             label: function(tooltipItem, data) {
-              return "$" + data["datasets"][0]["data"][tooltipItem["index"]];
+              return data["datasets"][0]["data"][tooltipItem["index"]];
             }
           },
           responsive: true,
@@ -961,18 +961,13 @@ $(document).ready(function() {
       type: "radar",
       data: {
         labels: [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December"
+          "Independent",
+          "Independent with set up",
+          "Supervision",
+          "Minimal assistance or skillful",
+          "Moderate assistance",
+          "Maximal assistance",
+          "Dependent",
         ],
         datasets: [
           {
@@ -983,18 +978,8 @@ $(document).ready(function() {
             pointRadius: 4,
             pointBorderColor: "rgba(76,132,255,1)",
             pointBackgroundColor: "#ffffff",
-            data: [25, 31, 43, 48, 21, 36, 23, 12, 33, 36, 28, 55]
+            data: [10, 26, 34, 20, 44, 60, 50]
           },
-          {
-            label: "Previous Year",
-            backgroundColor: "rgba(41, 204, 151, 0.2)",
-            borderColor: "#29cc97",
-            pointBorderWidth: 2,
-            pointRadius: 4,
-            pointBorderColor: "#29cc97",
-            pointBackgroundColor: "#ffffff",
-            data: [45, 77, 22, 12, 56, 43, 71, 23, 54, 19, 32, 55]
-          }
         ]
       },
       options: {

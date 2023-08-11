@@ -2,14 +2,13 @@
 
 @section('head_styles')
     <link href='{{asset('css/persian-datepicker.min.css')}}' rel='stylesheet'>
-    <link href="{{asset('assets/plugins/select2/css/select2.css')}}" rel="stylesheet" />
 @endsection
-
 
 @section('content')
 
     <div class="breadcrumb-wrapper">
-        <h1>مدیریت کاربران</h1>
+        <h1>مدیریت مراجعه کننده
+            ان</h1>
 
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb p-0">
@@ -20,11 +19,11 @@
                 </li>
                 <li class="breadcrumb-item">
                     <a href="{{route('panel.users.index')}}">
-                        کاربران
+                        مراجعه کنندگان
                     </a>
                 </li>
                 <li class="breadcrumb-item">
-                    ایجاد کاربر
+                    ایجاد مراجعه کننده
                 </li>
             </ol>
         </nav>
@@ -41,21 +40,14 @@
                         </div>
 
                         <div class="card-body">
-                            <h4 class="py-2 text-dark">نام کاربر</h4>
-                            <p>شماره همراه</p>
-                            <p>ایمیل</p>
+                            <h4 class="py-2 text-dark">
+                                مراجعه کننده
+                            </h4>
                         </div>
                     </div>
 
                     <hr class="w-100">
 
-                    {{--<div class="contact-info pt-4">
-                        <h5 class="text-dark mb-1">راه های ارتباطی</h5>
-                        <p class="text-dark font-weight-medium pt-4 mb-2">شماره همراه</p>
-                        <p></p>
-                        <p class="text-dark font-weight-medium pt-4 mb-2">ایمیل</p>
-                        <p></p>
-                    </div>--}}
                 </div>
             </div>
 
@@ -64,7 +56,7 @@
                     <ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab" role="tablist">
                         @can('user-create')
                             <li class="nav-item">
-                                <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">اطلاعات فردی</a>
+                                <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">اطلاعات فردی و درمانی</a>
                             </li>
                         @endcan
 
@@ -82,35 +74,58 @@
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
-                                        <label for="name">نام</label>
+                                        <label for="first_name">نام<b class="text-primary">*</b></label>
                                     </div>
 
                                     <div class="col-12 col-md-7">
-                                        {!! Form::text('name', null, array('class' => 'form-control', 'id'=>'name')) !!}
+                                        {!! Form::text('first_name', null, array('class' => 'form-control', 'id'=>'first_name', 'required' => 'required')) !!}
                                     </div>
 
                                 </div>
-
-{{--                                <div class="form-group row">--}}
-{{--                                    <div class="col-12 col-md-2 text-left">--}}
-{{--                                        <label for="username">نام کاربری</label>--}}
-{{--                                    </div>--}}
-
-{{--                                    <div class="col-12 col-md-7">--}}
-{{--                                        {!! Form::text('username', null, array('class' => 'form-control', 'id'=>'username')) !!}--}}
-{{--                                    </div>--}}
-
-{{--                                </div>--}}
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
-                                        <label for="phone">شماره همراه</label>
+                                        <label for="last_name">نام خانوادگی<b class="text-primary">*</b></label>
                                     </div>
 
                                     <div class="col-12 col-md-7">
-                                        {!! Form::text('phone', null, array('class' => 'form-control', 'id'=>'phone')) !!}
+                                        {!! Form::text('last_name', null, array('class' => 'form-control', 'id'=>'last_name', 'required' => 'required')) !!}
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="father_name">نام پدر<b class="text-primary">*</b></label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        {!! Form::text('father_name', null, array('class' => 'form-control', 'id'=>'father_name', 'required' => 'required')) !!}
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="mother_name">نام مادر<b class="text-primary">*</b></label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        {!! Form::text('mother_name', null, array('class' => 'form-control', 'id'=>'mother_name', 'required' => 'required')) !!}
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="phone">شماره همراه<b class="text-primary">*</b></label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        {!! Form::text('phone', null, array('class' => 'form-control', 'id'=>'phone', 'required' => 'required')) !!}
                                     </div>
                                 </div>
+
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
@@ -121,6 +136,7 @@
                                         {!! Form::text('landline_phone', null, array('class' => 'form-control', 'id'=>'landline_phone')) !!}
                                     </div>
                                 </div>
+
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
@@ -140,32 +156,69 @@
                                     <div class="col-12 col-md-7">
                                         <select class="form-control" id="gender" name="gender">
                                             <option value=""></option>
-                                            <option value="male">مرد</option>
-                                            <option value="female">زن</option>
-                                            <option value="other">سایر</option>
+                                            <option value="male" {{old('gender') == "male" ? "selected" : "" }}>مرد</option>
+                                            <option value="female" {{old('gender') == "female" ? "selected" : "" }}>زن</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
-                                        <label for="date_of_birth">تاریخ تولد</label>
+                                        <label for="birth_date">تاریخ تولد</label>
                                     </div>
 
                                     <div class="col-12 col-md-7">
-                                        <input type="text" class="form-control" id="date_of_birth" autocomplete="off">
-                                        <input type="text" class="form-control" name="date_of_birth" id="alt_date_of_birth" hidden>
+                                        <input type="text" class="form-control" id="birth_date" value="{{old('birth_date') ? timestamp_to_date(old('birth_date'), 'Y-m-d') : null }}" autocomplete="off">
+                                        <input type="text" class="form-control" name="birth_date" id="alt_birth_date" value="{{old('birth_date')}}" hidden>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
-                                        <label for="city_id">شهر</label>
+                                        <label for="address">آدرس</label>
                                     </div>
 
                                     <div class="col-12 col-md-7">
-                                        <select class="select_city form-control" name="city_id" id="city_id"></select>
+                                        {!! Form::text('address', null, array('class' => 'form-control', 'id'=>'address')) !!}
                                     </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="admin_id">درمانگر</label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        <select class="form-control" id="admin_id" name="admin_id">
+                                            <option value=""></option>
+                                            @foreach(\App\Models\Admin::all() as $admin)
+                                                <option value="{{$admin->id}}" {{old('admin_id') == $admin->id? 'selected': ''}}>{{$admin->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="first_visit">اولین مراجعه</label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        <input type="text" class="form-control" id="first_visit" value="{{old('first_visit') ? timestamp_to_date(old('first_visit'), 'Y-m-d') : null }}" autocomplete="off">
+                                        <input type="text" class="form-control" name="first_visit" id="alt_first_visit" value="{{old('first_visit')}}" hidden>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="diagnosis">تشخیص</label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        {!! Form::text('diagnosis', null, array('class' => 'form-control', 'id'=>'diagnosis')) !!}
+                                    </div>
+
                                 </div>
 
                                 <div class="d-flex justify-content-center mt-5">
@@ -191,19 +244,44 @@
 @section('scripts')
     <script src="{{asset('js/persian-date.min.js')}}"></script>
     <script src="{{asset('js/persian-datepicker.min.js')}}"></script>
-    <script src="{{asset('assets/plugins/select2/js/select2.js')}}"></script>
-
-    <script src="{{asset('js/custom_js/cities.js')}}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $("#date_of_birth").pDatepicker({
-                autoClose: true,
-                initialValue: false,
-                initialValueType: 'gregorian',
-                format: 'YYYY/MM/DD',
-                altField: '#alt_date_of_birth',
-            });
+            var initial_date = $('#alt_birth_date').val();
+            if(initial_date){
+                $("#birth_date").pDatepicker({
+                    autoClose: true,
+                    initialValueType: 'gregorian',
+                    format: 'YYYY/MM/DD',
+                    altField: '#alt_birth_date',
+                })
+            }else{
+                $("#birth_date").pDatepicker({
+                    autoClose: true,
+                    initialValue: false,
+                    initialValueType: 'gregorian',
+                    format: 'YYYY/MM/DD',
+                    altField: '#alt_birth_date',
+                });
+            }
+
+            var initial_first_visit = $('#alt_first_visit').val();
+            if(initial_first_visit){
+                $("#first_visit").pDatepicker({
+                    autoClose: true,
+                    initialValueType: 'gregorian',
+                    format: 'YYYY/MM/DD',
+                    altField: '#alt_first_visit',
+                })
+            }else{
+                $("#first_visit").pDatepicker({
+                    autoClose: true,
+                    initialValue: false,
+                    initialValueType: 'gregorian',
+                    format: 'YYYY/MM/DD',
+                    altField: '#alt_first_visit',
+                });
+            }
 
         });
     </script>

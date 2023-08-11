@@ -23,7 +23,7 @@
         <div class="col-12">
             <div class="card card-default">
                 <div class="card-header card-header-border-bottom d-flex justify-content-between">
-                    <h2>لیست مراجعه کننده ها</h2>
+                    <h2>لیست مراجعه کنندگان</h2>
 
                     @can('user-create')
                         <a href="{{ route('panel.users.create') }}" class="btn btn-outline-primary btn-sm text-uppercase" title="افزودن مراجعه کننده">
@@ -31,9 +31,6 @@
                         </a>
                     @endcan
 
-{{--                    <a href="#" target="_blank" class="btn btn-outline-primary btn-sm text-uppercase">--}}
-{{--                        <i class="mdi mdi-24px  mdi-printer"></i>--}}
-{{--                    </a>--}}
                 </div>
 
                 <div class="card-body">
@@ -78,7 +75,6 @@
                                     <td>{{ Morilog\Jalali\CalendarUtils::strftime('Y/m/d', strtotime($user->first_visit))}}</td>
                                     <td>{{ $user->diagnosis }}</td>
                                     <td>
-                                        <a class="btn p-0" href="{{ route('panel.users.show',$user->id) }}" title="نمایش"><span class="mdi mdi-eye-outline mdi-dark mdi-18px"></span></a>
 
                                         @can('user-edit')
                                         <a class="btn p-0" href="{{ route('panel.users.edit',$user->id) }}" title="ویرایش"><span class="mdi mdi-square-edit-outline mdi-dark mdi-18px"></span></a>

@@ -12,12 +12,7 @@ use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use App\Models\admin;
 use Exception;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class AdminController extends Controller
 {
