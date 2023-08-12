@@ -44,17 +44,20 @@ class AuthController extends Controller
 
         $user = User::where('phone', $request->get('phone'))->first();
 
+        $is_first_time = 0;
+
         if (!$user){
             $user =  User::create([
                 'phone' => $request->get('phone'),
             ]);
+            $is_first_time = 1;
         }
 
         $password = "1234";//rand(1111, 9999);
         Redis::set($user->phone, Hash::make($password), 'EX', 300); //expire in 5 min
 //        Smsirlaravel::ultraFastSend(['otp'=>$password],$this->sms_template('otp'),$user->phone); //TODO
 
-        return $this->customSuccess($request->get('phone'), 'رمز یکبار مصرف برای ' . $request->get('phone') . ' ارسال شد.');
+        return $this->customSuccess($is_first_time, 'رمز یکبار مصرف برای ' . $request->get('phone') . ' ارسال شد.');
     }
 
     public function login_second_step(Request $request)
