@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @method static find($cluster_id)
+ * @method static pluck(string $string)
+ * @method static where(string $string, $content_id)
  */
 class Cluster extends Model
 {
@@ -19,6 +21,18 @@ class Cluster extends Model
     protected $fillable = [
         'content_id', 'name', 'description', 'cover_id'
     ];
+
+    protected $appends = [
+        'best_parent_score', 'best_therapist_score'
+    ];
+
+    function getBestParentScoreAttribute() {
+        return $this->steps()->count() * 2;
+    }
+
+    function getBestTherapistScoreAttribute() {
+        return $this->steps()->count() * 7;
+    }
 
     public function cover(){
         return $this->belongsTo(File::class, 'cover_id');

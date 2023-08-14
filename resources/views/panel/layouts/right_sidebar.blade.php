@@ -39,7 +39,7 @@
                                 @can('user-list')
                                 <li class="">
                                     <a class="sidenav-item-link" href="{{url('/panel/users')}}">
-                                        <span class="nav-text">مراجعه کننده ها</span>
+                                        <span class="nav-text">مراجعه کنندگان</span>
                                     </a>
                                 </li>
                                 @endcan
@@ -65,39 +65,14 @@
 
                     @endif
 
-                    @if(auth()->user()->can('category-list') || auth()->user()->can('video-list'))
-
-                        <li class="has-sub @if(request()->is('panel/categories*')) active expand @endif">
-                            <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse" data-target="#content"
-                               aria-expanded="false" aria-controls="content">
+                    @can('content-list')
+                        <li class="has-sub @if(request()->is('panel/contents*')) active expand @endif">
+                            <a class="sidenav-item-link" href="{{url('panel/contents')}}">
                                 <i class="mdi mdi-text"></i>
-                                <span class="nav-text">مدیریت محتوا</span> <b class="caret"></b>
+                                <span class="nav-text">مدیریت محتوا</span>
                             </a>
-
-                            <ul class="collapse " id="content" data-parent="#sidebar-menu">
-                                <div class="sub-menu">
-
-                                    @can('category-list')
-                                        <li class="">
-                                            <a class="sidenav-item-link" href="{{url('/panel/categories')}}">
-                                                <span class="nav-text">دسته بندی ها</span>
-                                            </a>
-                                        </li>
-                                    @endcan
-
-                                    @can('video-list')
-                                        <li class="">
-                                            <a class="sidenav-item-link" href="{{url('/panel/products')}}">
-                                                <span class="nav-text">ویدیو ها</span>
-                                            </a>
-                                        </li>
-                                    @endcan
-
-                                </div>
-                            </ul>
                         </li>
-
-                    @endif
+                    @endcan
 
                     @can('ticket-list')
                         <li class="has-sub @if(request()->is('panel/tickets*')) active expand @endif">

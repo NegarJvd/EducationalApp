@@ -76,9 +76,11 @@
                     @endcan
 
                     @can('content-list')
-                    <li class="nav-item">
-                        <a class="nav-link" id="contents-tab" data-toggle="tab" href="#contents" role="tab" aria-controls="contents">محتوا ها</a>
-                    </li>
+                        @if($user->admin_id == \Illuminate\Support\Facades\Auth::id())
+                            <li class="nav-item">
+                                <a class="nav-link" id="contents-tab" data-toggle="tab" href="#contents" role="tab" aria-controls="contents">محتوا ها</a>
+                            </li>
+                        @endif
                     @endcan
 
                 </ul>
@@ -273,39 +275,69 @@
                     @endcan
 
                     @can('content-list')
-                    <div class="tab-pane fade" id="contents" role="tabpanel" aria-labelledby="contents-tab">
-                        <div class="tab-pane-content mt-5">
+                            @if($user->admin_id == \Illuminate\Support\Facades\Auth::id())
+                                <div class="tab-pane fade" id="contents" role="tabpanel" aria-labelledby="contents-tab">
+                                    <div class="tab-pane-content mt-5">
 
-                            @include('panel.panel_message')
+                                        @include('panel.panel_message')
 
-                            <table class="table text-center font-size-14">
-                                <thead>
-                                <tr>
-                                    <th>محتوا</th>
-                                    <th>دسته بندی</th>
-                                    <th>عملیات</th>
-                                </tr>
-                                </thead>
+                                        <div class="row col-12">
+                                            <div class="col-5">
+                                                <select class="form-control" id="contents_select">
+                                                    <option value=""></option>
+                                                    @foreach(\App\Models\Content::all() as $content)
+                                                        <option value="{{$content->id}}">{{$content->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-5">
+                                                <select disabled class="form-control" id="clusters_select"></select>
+                                            </div>
+                                            <div class="col-2">
+                                                <div class="d-flex justify-content-center">
+                                                    <button type="button" class="ladda-button btn btn-primary mb-2 btn-pill" id="add_content" disabled>
+                                                        <span class="ladda-label">افزودن</span>
+                                                        <span class="ladda-spinner"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                <tbody id="orders_table">
+                                        <table class="table text-center font-size-14">
+                                            <thead>
+                                            <tr>
+                                                <th>محتوا</th>
+                                                <th>دسته بندی</th>
+                                                <th>عملیات</th>
+                                            </tr>
+                                            </thead>
 
-                                    <tr>
-                                        <td>مسواک زدن</td>
-                                        <td>دختر</td>
-                                        <td>
-                                            <button type="button" class="btn p-0 change-status" data-toggle="modal" data-target="#cancel_order"
-                                                    title="عملكرد" >
-                                                <span class="mdi mdi-eye-outline mdi-dark mdi-18px"></span>
-                                            </button>
-                                        </td>
+                                            <tbody id="contents_table_body">
+                                                @foreach($clusters as $cluster)
+                                                    <tr>
+                                                        <td>{{$cluster->content->name}}</td>
+                                                        <td>{{$cluster->name}}</td>
+                                                        <td>
+                                                            @can('user-evaluation')
+                                                                <input hidden value="{{$cluster->id}}" class="cluster_id">
+                                                                <button type="button" class="btn p-0 view_actions" data-toggle="modal" data-target="#actions_charts"
+                                                                        title="عملكرد">
+                                                                    <span class="mdi mdi-eye-outline mdi-dark mdi-18px"></span>
+                                                                </button>
+                                                                <button type="button" class="btn p-0 delete_content" title="حذف">
+                                                                    <span class="mdi mdi-trash-can-outline mdi-dark mdi-18px"></span>
+                                                                </button>
 
-                                    </tr>
+                                                            @endcan
+                                                        </td>
 
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endif
                     @endcan
 
                 </div>
@@ -316,40 +348,8 @@
 @endsection
 
 @section('scripts')
-    <script src='{{asset('assets/plugins/charts/Chart.min.js')}}'></script>
-    <script src="{{asset('js/persian-date.min.js')}}"></script>
-    <script src="{{asset('js/chart.js')}}"></script>
     <script src="{{asset('js/persian-datepicker.min.js')}}"></script>
-
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB1lgc4S8VAc6DS6K1fuCc53DOHp2jncYs&libraries=places&callback=initialize"></script>
-
-
-    <div class="modal fade" id="cancel_order" tabindex="-1" role="dialog" aria-labelledby="cancel_order" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle2">عملکرد  </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body" id="popup_form">
-
-                    <div class="col-12">
-                        <div class="card card-default">
-                            <div class="card-body" style="height: 450px;">
-                                <canvas id="linechart" class="chartjs"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <script src="{{asset('js/persian-date.min.js')}}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -396,7 +396,75 @@
                     altField: '#alt_first_visit',
                 });
             }
-
         });
     </script>
+
+    @if($user->admin_id == \Illuminate\Support\Facades\Auth::id())
+        @can('user-evaluation')
+        <script>
+            $(document).ready(function() {
+                let today = new Date().toLocaleDateString('fa-IR-u-nu-latn');
+                let this_month = today.split("/")[1] - 1
+                $('#month').val(this_month).change();
+            });
+        </script>
+
+
+        <script src="{{asset('js/custom_js/users_contents.js')}}"></script>
+        <script src='{{asset('assets/plugins/charts/Chart.min.js')}}'></script>
+        <script src="{{asset('js/custom_js/actions_chart.js')}}"></script>
+
+        <div class="modal fade" id="actions_charts" tabindex="-1" role="dialog" aria-labelledby="actions_charts" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle2">عملکرد </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body" id="popup_form">
+                        <input hidden value="{{$user->id}}" id="user_id">
+                        <input hidden value="" id="cluster_id">
+
+                        <div class="col-12">
+                            <select class="form-control" id="month">
+                                <option value="1">فروردین</option>
+                                <option value="2">اردیبهشت</option>
+                                <option value="3">خرداد</option>
+                                <option value="4">تیر</option>
+                                <option value="5">مرداد</option>
+                                <option value="6">شهریور</option>
+                                <option value="7">مهر</option>
+                                <option value="8">آبان</option>
+                                <option value="9">آذر</option>
+                                <option value="10">دی</option>
+                                <option value="11">بهمن</option>
+                                <option value="12">اسفند</option>
+                            </select>
+                            <br>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="card card-default">
+                                <div class="card-body charts_div" style="min-height: 450px;">
+                                    <div class="card-body d-flex align-items-center justify-content-center" style="height: 400px">
+                                        <div class="sk-folding-cube">
+                                            <div class="sk-cube1 sk-cube"></div>
+                                            <div class="sk-cube2 sk-cube"></div>
+                                            <div class="sk-cube4 sk-cube"></div>
+                                            <div class="sk-cube3 sk-cube"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endcan
+    @endif
 @endsection

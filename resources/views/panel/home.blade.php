@@ -24,7 +24,7 @@
                     <h2 class="mb-1">{{$users_count}}</h2>
                     <p>تعداد کاربران</p>
                     <div class="chartjs-wrapper">
-                        <canvas id="users_count"></canvas>
+                        <canvas class="users_count"></canvas>
                     </div>
                 </div>
             </div>
@@ -33,10 +33,10 @@
         <div class="col-xl-4 col-sm-4">
             <div class="card card-mini mb-4">
                 <div class="card-body">
-                    <h2 class="mb-1">0</h2>
-                    <p>تعداد دسته بندی ها</p>
+                    <h2 class="mb-1">20</h2>
+                    <p>تعداد محتوا ها</p>
                     <div class="chartjs-wrapper">
-                        <canvas id="categories_chart"></canvas>
+                        <canvas class="users_count"></canvas>
                     </div>
                 </div>
             </div>
@@ -45,10 +45,10 @@
         <div class="col-xl-4 col-sm-4">
             <div class="card card-mini mb-4">
                 <div class="card-body">
-                    <h2 class="mb-1">0</h2>
-                    <p>تعداد ویدیو ها</p>
+                    <h2 class="mb-1">11</h2>
+                    <p>تعداد مديران</p>
                     <div class="chartjs-wrapper">
-                        <canvas id="videos_chart"></canvas>
+                        <canvas class="users_count"></canvas>
                     </div>
                 </div>
             </div>
@@ -60,6 +60,6 @@
 
 @section('scripts')
     <script src='{{asset('assets/plugins/charts/Chart.min.js')}}'></script>
-
+    <script src="{{asset('js/chart.js')}}"></script>
     <script src='{{asset('js/custom_js/dashboard.js')}}'></script>
 @endsection

@@ -82,7 +82,7 @@ class HomeController extends Controller
         $data['this_week_users'] = $this_week_users;
         $data['this_week_dates'] = $this_week_dates;
 
-        return $this->success($data, "اطلاعات داشبورد");
+        return $this->customSuccess($data, "اطلاعات داشبورد");
     }
 
     public function show_profile(){
@@ -132,5 +132,13 @@ class HomeController extends Controller
         $admin->update($input);
 
         return redirect()->back()->with('success', 'اطلاعات شما با موفقیت به روز رسانی شد.');
+    }
+
+    public function upload_file(){
+        $data = [
+            'id' => 1,
+            'path' => asset('/assets/img/cd_5.mp4')
+        ];
+        return $this->customSuccess($data);
     }
 }

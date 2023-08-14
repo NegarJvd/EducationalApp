@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -105,6 +106,14 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        if($user->admin_id == Auth::id()){
+            $clusters = $user->clusters()
+                ->paginate()
+                ->unique('content_id');
+
+            return view('panel.users.edit',compact('user', 'clusters'));
+        }
+
         return view('panel.users.edit',compact('user'));
     }
 

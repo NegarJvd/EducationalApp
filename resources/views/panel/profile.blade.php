@@ -283,12 +283,17 @@
     <script src="{{asset('js/persian-datepicker.min.js')}}"></script>
     <script src="{{asset('js/bootstrap-slider.js')}}"></script>
     <script src="{{asset('js/dropzone.min.js')}}"></script>
-{{--    <script src="{{asset('assets/plugins/select2/js/select2.js')}}"></script>--}}
-
-{{--    <script src="{{asset('js/custom_js/cities.js')}}"></script>--}}
 
     <script type="text/javascript">
         $(document).ready(function() {
+            $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+                localStorage.setItem('activeTab', $(e.target).attr('href'));
+            });
+            var activeTab = localStorage.getItem('activeTab');
+            if(activeTab){
+                $('#myTab a[href="' + activeTab + '"]').tab('show');
+            }
+
             var initial_date = $('#alt_birth_date').val();
             if(initial_date){
                 $("#birth_date").pDatepicker({
@@ -311,8 +316,7 @@
                 location.reload();
             });
         });
-    </script>
-    <script>
+
         Dropzone.options.profileDropzone = {
             paramName: "file", // The name that will be used to transfer the file
             uploadMultiple: false,
@@ -352,16 +356,5 @@
                 });
             }
         }
-    </script>
-    <script>
-        $(document).ready(function(){
-            $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
-                localStorage.setItem('activeTab', $(e.target).attr('href'));
-            });
-            var activeTab = localStorage.getItem('activeTab');
-            if(activeTab){
-                $('#myTab a[href="' + activeTab + '"]').tab('show');
-            }
-        });
     </script>
 @endsection

@@ -1,9 +1,14 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Panel\ActionController;
 use App\Http\Controllers\Panel\AdminController;
+use App\Http\Controllers\Panel\ContentController;
+use App\Http\Controllers\Panel\HomeController;
 use App\Http\Controllers\Panel\RoleController;
+use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Panel\UserController;
+use App\Http\Controllers\Panel\UsersContentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -39,28 +44,30 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
 
     Route::resource('roles', RoleController::class);
 
-    Route::resource('admins', AdminController::class);
+    Route::resource('admins', AdminController::class)->except('destroy');
     Route::post('change_admin_role', [AdminController::class, 'change_admin_role'])->name('change_admin_role');
     Route::get('change_admin_status/{user_id}', [AdminController::class, 'change_admin_status'])->name('change_admin_status');
 
     Route::resource('users', UserController::class);
-//    Route::get('change_user_status/{user_id}', [UserController::class, 'change_user_status'])->name('change_user_status');
-////    Route::resource('/addresses', AddressesController::class)->only('show', 'store', 'update', 'destroy');
-//
-////    Route::resource('categories', CategoryController::class);
-////    Route::resource('products', ProductController::class);
-////    Route::apiResource('comments', CommentController::class)->except('destroy');
-////
-////    Route::resource('messages', MessageController::class)->only('index', 'show', 'create', 'store');
-////    Route::resource('tickets', TicketController::class)->only('index', 'edit', 'update');
+
+    Route::resource('contents', ContentController::class);
+    Route::resource('tickets', TicketController::class)->only('index', 'show');
+
+    //charts
+    Route::post('evaluation', [ActionController::class, 'evaluation']);
+
+    //users contents
+    Route::get('get_each_contents_clusters_list/{content_id}', [UsersContentController::class, 'get_each_contents_clusters_list']);
+    Route::post('add_content_for_user', [UsersContentController::class, 'add_content_for_user']);
+    Route::delete('delete_content_for_user', [UsersContentController::class, 'delete_content_for_user']);
 //
 //    //search with select2
 //    Route::get('admins_list', [AdminController::class, 'search_in_admins_list_json']);
 //    Route::get('users_list', [UserController::class, 'search_in_users_list_json']);
-//    Route::get('cityList', [HomeController::class, 'cityList']);
+
 //
 //    //upload file.
-//    Route::post('upload', [UploadController::class, 'upload_file']);
+    Route::post('upload', [HomeController::class, 'upload_file']);
 //    Route::delete('delete_file/{upload_id}', [UploadController::class, 'delete_file']);
 //
 ////    Route::get('options', [OptionsController::class, 'options'])->name('options');
