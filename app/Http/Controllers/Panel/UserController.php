@@ -24,8 +24,8 @@ class UserController extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:user-list|user-create|user-edit|user-delete|search_in_users_list|change-user-status');
-        $this->middleware('permission:user-list', ['only' => ['index','show']]);
+        $this->middleware('permission:user-list|all-users-list|user-create|user-edit|all_users-edit|user-delete|search_in_users_list');
+        $this->middleware('permission:user-list', ['only' => ['index']]);
         $this->middleware('permission:user-create', ['only' => ['create','store']]);
         $this->middleware('permission:user-edit', ['only' => ['edit','update']]);
 //        $this->middleware('permission:user-delete', ['only' => ['destroy']]);
@@ -34,7 +34,11 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $data = User::query();
+        if(Auth::user()->can('all-users-list')){
+            $data = User::query();
+        }else{
+            $data = User::where('admin_id', Auth::id());
+        }
 
         $search = $request->get('search');
         if (!is_null($search)){
@@ -106,57 +110,75 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        if(Auth::user()->can('all-users-edit')){
+            if($user->admin_id == Auth::id()){
+                $clusters = $user->clusters()
+                    ->paginate()
+                    ->unique('content_id');
+
+                return view('panel.users.edit',compact('user', 'clusters'));
+            }
+
+            return view('panel.users.edit',compact('user'));
+        }
+
         if($user->admin_id == Auth::id()){
             $clusters = $user->clusters()
                 ->paginate()
                 ->unique('content_id');
 
             return view('panel.users.edit',compact('user', 'clusters'));
+        }else{
+            return abort(406);
         }
-
-        return view('panel.users.edit',compact('user'));
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'first_name' => ['nullable', 'string', 'max:255'],
-            'last_name' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable','numeric','digits:11','regex:/^(09)/', 'unique:users,phone,'. $id],
-            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users,email,'. $id],
-            'birth_date' => ['nullable'],
-            'gender' => ['nullable', Rule::in(User::gender())],
-            'address' => ['nullable', 'string', 'max:255'],
-            'landline_phone' => ['nullable', 'numeric'],
-            'father_name' => ['nullable', 'string', 'max:255'],
-            'mother_name' => ['nullable', 'string', 'max:255'],
-            'first_visit' => ['nullable'],
-            'diagnosis' => ['nullable', 'string', 'max:255'],
-            'admin_id' => ['nullable', Rule::in(Admin::pluck('id'))],
-
-        ]);
         $user = User::find($id);
         $user_array = $user->toArray();
 
-        $input = $request->all();
-        $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date')) : $user->birth_date;
-        $input['first_visit'] = !is_null($request->get('first_visit')) ? timestamp_to_date($request->get('first_visit'), "Y-m-d") : null;
+        if(Auth::user()->can('all-users-edit') or $user->admin_id == Auth::id()){
 
-        $input = array_merge($user_array, $input);
+            $request->validate([
+                'first_name' => ['nullable', 'string', 'max:255'],
+                'last_name' => ['nullable', 'string', 'max:255'],
+                'phone' => ['nullable','numeric','digits:11','regex:/^(09)/', 'unique:users,phone,'. $id],
+                'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users,email,'. $id],
+                'birth_date' => ['nullable'],
+                'gender' => ['nullable', Rule::in(User::gender())],
+                'address' => ['nullable', 'string', 'max:255'],
+                'landline_phone' => ['nullable', 'numeric'],
+                'father_name' => ['nullable', 'string', 'max:255'],
+                'mother_name' => ['nullable', 'string', 'max:255'],
+                'first_visit' => ['nullable'],
+                'diagnosis' => ['nullable', 'string', 'max:255'],
+                'admin_id' => ['nullable', Rule::in(Admin::pluck('id'))],
 
-        $validation = Validator::make($input, [
-            'first_name' => ['required'],
-            'last_name' => ['required'],
-            'phone' => ['required'],
-        ]);
+            ]);
 
-        if ($validation->fails()) {
-            return redirect()->back()->withErrors($validation)->withInput();
+            $input = $request->all();
+            $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date')) : $user->birth_date;
+            $input['first_visit'] = !is_null($request->get('first_visit')) ? timestamp_to_date($request->get('first_visit'), "Y-m-d") : null;
+
+            $input = array_merge($user_array, $input);
+
+            $validation = Validator::make($input, [
+                'first_name' => ['required'],
+                'last_name' => ['required'],
+                'phone' => ['required'],
+            ]);
+
+            if ($validation->fails()) {
+                return redirect()->back()->withErrors($validation)->withInput();
+            }
+
+            $user->update($input);
+
+            return redirect()->back()->with('success','مراجعه کننده با موفقیت ویرایش شد.');
         }
 
-        $user->update($input);
-
-        return redirect()->back()->with('success','مراجعه کننده با موفقیت ویرایش شد.');
+        return abort(406);
     }
 
 //    public function destroy(User $user)
