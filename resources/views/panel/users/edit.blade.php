@@ -404,7 +404,7 @@
         <script>
             $(document).ready(function() {
                 let today = new Date().toLocaleDateString('fa-IR-u-nu-latn');
-                let this_month = today.split("/")[1] - 1
+                let this_month = today.split("/")[1]
                 $('#month').val(this_month).change();
             });
         </script>
@@ -428,22 +428,29 @@
                         <input hidden value="{{$user->id}}" id="user_id">
                         <input hidden value="" id="cluster_id">
 
-                        <div class="col-12">
-                            <select class="form-control" id="month">
-                                <option value="1">فروردین</option>
-                                <option value="2">اردیبهشت</option>
-                                <option value="3">خرداد</option>
-                                <option value="4">تیر</option>
-                                <option value="5">مرداد</option>
-                                <option value="6">شهریور</option>
-                                <option value="7">مهر</option>
-                                <option value="8">آبان</option>
-                                <option value="9">آذر</option>
-                                <option value="10">دی</option>
-                                <option value="11">بهمن</option>
-                                <option value="12">اسفند</option>
-                            </select>
-                            <br>
+                        <div class="row col-12">
+                            <div class="col-8">
+                                <select class="form-control" id="month">
+                                    <option value="1">فروردین</option>
+                                    <option value="2">اردیبهشت</option>
+                                    <option value="3">خرداد</option>
+                                    <option value="4">تیر</option>
+                                    <option value="5">مرداد</option>
+                                    <option value="6">شهریور</option>
+                                    <option value="7">مهر</option>
+                                    <option value="8">آبان</option>
+                                    <option value="9">آذر</option>
+                                    <option value="10">دی</option>
+                                    <option value="11">بهمن</option>
+                                    <option value="12">اسفند</option>
+                                </select>
+                                <br>
+                            </div>
+
+                            <div class="col-4">
+                                <b> آخرین امتیاز :</b>
+                                <span id="last_action_score"></span>
+                            </div>
                         </div>
 
                         <div class="col-12">

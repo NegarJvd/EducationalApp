@@ -48,9 +48,7 @@ class ActionController extends Controller
 
             $actions = $user->actions()
                             ->whereHas('step', function($q) use ($cluster_id) {
-                                $q->whereHas('cluster', function($p) use ($cluster_id) {
-                                    $p->where('id', $cluster_id);
-                                });
+                                $q->where('cluster_id', $cluster_id);
                             })
                             ->whereBetween('created_at', [$start_date->toCarbon(), $end_date->toCarbon()])
                             ->groupBy('step_id')

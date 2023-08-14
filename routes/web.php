@@ -54,7 +54,7 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
     Route::resource('tickets', TicketController::class)->only('index', 'show');
 
     //charts
-    Route::post('evaluation', [ActionController::class, 'evaluation']);
+    Route::get('evaluation', [ActionController::class, 'evaluation']);
 
     //users contents
     Route::get('get_each_contents_clusters_list/{content_id}', [UsersContentController::class, 'get_each_contents_clusters_list']);

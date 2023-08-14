@@ -36,13 +36,34 @@ class ActionController extends Controller
             return $this->accessDenied("مراجعه کننده مذکور، به شما ارجاع داده نشده است و شما دسترسی لازم برای گرفتن عملکرد ندارید.");
         }
 
-        $results = [];
-
-        //finding steps
         $cluster_id = $request->get('cluster_id');
 
+        //last score
+        $last_actions = $user->actions()
+            ->whereHas('step', function($q) use ($cluster_id) {
+                $q->where('cluster_id', $cluster_id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->unique('step_id');
+
+        $sum = 0;
+        $count = 0;
+        foreach ($last_actions as $last_action){
+            $sum += $last_action->count * $last_action->result;
+            $count += $last_action->count;
+        }
+        if($count > 0)
+            $last_action_score = $sum / $count;
+        else
+            $last_action_score = 0;
+
+
+        //get scores with dates
         $month = $request->get('month');
         $last_day = $month < 7 ? 31 : 30;
+
+        $results = [];
 
         for($i = 1; $i <= $last_day; $i++){
             $start_date = new Jalalian(Jalalian::now()->getYear(), $month, $i, 0, 0, 0);
@@ -50,9 +71,7 @@ class ActionController extends Controller
 
             $actions = $user->actions()
                             ->whereHas('step', function($q) use ($cluster_id) {
-                                $q->whereHas('cluster', function($p) use ($cluster_id) {
-                                    $p->where('id', $cluster_id);
-                                });
+                                $q->where('cluster_id', $cluster_id);
                             })
                             ->whereBetween('created_at', [$start_date->toCarbon(), $end_date->toCarbon()])
                             ->groupBy('step_id')
@@ -63,6 +82,11 @@ class ActionController extends Controller
             $results[] = $actions;
         }
 
-        return $this->customSuccess($results, "ارزیابی");
+        $data = [
+            'last_action_score' => round($last_action_score, 2),
+            'results' => $results
+        ];
+
+        return $this->customSuccess($data, "ارزیابی");
     }
 }

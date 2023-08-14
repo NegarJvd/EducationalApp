@@ -35,7 +35,7 @@ function get_evaluation_data(cluster_id, user_id, month) {
 
     $.ajax({
         url: '/panel/evaluation',
-        type: 'POST',
+        type: 'GET',
         datatype: 'json',
         data: {
             cluster_id : cluster_id,
@@ -47,6 +47,8 @@ function get_evaluation_data(cluster_id, user_id, month) {
             'Accept': 'application/json'
         },
         success: function (data) {
+            $('#last_action_score').text(data.data.last_action_score).change();
+
             chart_div.empty();
             chart_div.append(
                 '<canvas id="chart_convas" class="chartjs"></canvas>'
@@ -60,13 +62,13 @@ function get_evaluation_data(cluster_id, user_id, month) {
 
                     // The data for our dataset
                     data: {
-                        labels: [...Array(data.data.length)].map((_, i) => i + 1),
+                        labels: [...Array(data.data.results.length)].map((_, i) => i + 1),
                         datasets: [
                             {
                                 label: "عملکرد ثبت شده توسط والدین",
                                 backgroundColor: "transparent",
                                 borderColor: "rgb(82, 136, 255)",
-                                data: data.data,
+                                data: data.data.results,
                                 lineTension: 0.3,
                                 pointRadius: 5,
                                 pointBackgroundColor: "rgba(255,255,255,1)",
