@@ -36,6 +36,22 @@
                         <ul class="collapse " id="user" data-parent="#sidebar-menu">
                             <div class="sub-menu">
 
+                                @can('role-list')
+                                    <li class="">
+                                        <a class="sidenav-item-link" href="{{url('/panel/roles')}}">
+                                            <span class="nav-text">نقش ها</span>
+                                        </a>
+                                    </li>
+                                @endcan
+
+                                @can('admin-list')
+                                    <li class="">
+                                        <a class="sidenav-item-link" href="{{url('/panel/admins')}}">
+                                            <span class="nav-text">مدیران</span>
+                                        </a>
+                                    </li>
+                                @endcan
+
                                 @can('user-list')
                                 <li class="">
                                     <a class="sidenav-item-link" href="{{url('/panel/users')}}">
@@ -44,21 +60,6 @@
                                 </li>
                                 @endcan
 
-                                @can('admin-list')
-                                <li class="">
-                                    <a class="sidenav-item-link" href="{{url('/panel/admins')}}">
-                                        <span class="nav-text">مدیران</span>
-                                    </a>
-                                </li>
-                                @endcan
-
-                                @can('role-list')
-                                <li class="">
-                                    <a class="sidenav-item-link" href="{{url('/panel/roles')}}">
-                                        <span class="nav-text">نقش ها</span>
-                                    </a>
-                                </li>
-                                @endcan
                             </div>
                         </ul>
                     </li>
