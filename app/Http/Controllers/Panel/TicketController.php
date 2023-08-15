@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Models\Ticket;
+use App\Http\Resources\UserWithTicketsResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Models\Permission;
 
 class TicketController extends Controller
 {
@@ -16,60 +16,43 @@ class TicketController extends Controller
      */
     function __construct()
     {
-        $permissions = [
-            'ticket-list',
-            'ticket-reply',
-        ];
-
-        foreach ($permissions as $permission) {
-            $array = Permission::where('name', $permission)->get();
-            if(count($array) == 0){
-                Permission::create(['name' => $permission]);
-            }
-        }
-
+        $this->middleware('permission:ticket-list|ticket-reply');
         $this->middleware('permission:ticket-list', ['only' => ['index']]);
         $this->middleware('permission:ticket-reply', ['only' => ['edit','update']]);
     }
 
-    public function index(Request $request){
-        $tickets = Ticket::whereNull('parent_id');
+    public function index(Request $request)
+    {
+        $admin = Auth::user();
 
-        $keyword = $request->get('search');
-        if (!empty($keyword)) {
-            $tickets->where(function ($query) use ($keyword) {
-                $query->where('subject', 'LIKE', "%$keyword%")
-                    ->orWhere('text', 'LIKE', "%$keyword%");
+        $data = User::query()
+                    ->where('admin_id', $admin->id)
+                    ->whereHas('tickets')
+                    ->withAggregate('tickets','created_at', 'max')
+                    ->with('latest_ticket');
+
+        $search = $request->get('search');
+        if (!is_null($search)){
+            $data = $data->where(function ($query) use($search){
+                $query->where('first_name', 'LIKE', "%$search%");
+                $query->orWhere('last_name' , 'LIKE', "%$search%");
+                $query->orWhere('phone' , 'LIKE', "%$search%");
+                $query->orWhere('email', 'LIKE', "%$search%");
+                $query->orWhere('father_name' , 'LIKE', "%$search%");
+                $query->orWhere('mother_name', 'LIKE', "%$search%");
             });
         }
 
-        $tickets = $tickets->orderBy('id', 'desc')
-            ->paginate($this->perPagePanel);
+        $data = $data->orderBy('tickets_max_created_at','DESC')
+                    ->paginate($this->perPagePanel);
 
-        return view('panel.tickets.index', compact('tickets'));
+        return view('panel.tickets.index',compact('data'))
+            ->with('i', ($request->input('page', 1) - 1) * 5);
     }
 
-    public function edit(Ticket $ticket){
-        if (!is_null($ticket->parent_id)){
-            $ticket = $ticket->parent()->first();
-        }
-        return view('panel.tickets.edit', compact('ticket'));
-    }
+    public function show($id){
+        $user = User::find($id);
 
-    public function update(Request $request, $parent_id){
-        $request->validate([
-            'text' => 'required|string|max:255'
-        ]);
-
-        $admin = Auth::user();
-
-        Ticket::create([
-            'admin_id' => $admin->id,
-            'subject' => Ticket::find($parent_id)->subject,
-            'text' => $request->get('text'),
-            'parent_id' => $parent_id
-        ]);
-
-        return redirect()->back()->with('success', "ارسال شد.");
+        return $this->customSuccess(UserWithTicketsResource::make($user), "لیست تیکت ها");
     }
 }

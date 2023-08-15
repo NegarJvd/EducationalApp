@@ -27,6 +27,7 @@ class PermissionsSeeder extends Seeder
             'user-list', 'user-edit', 'search_in_users_list',
             'content-list', 'add_content_for_user', 'delete_content_for_user',
             'user-evaluation',
+            'ticket-list', 'ticket-reply',
         ];
 
         $Manager_permissions_id = [];

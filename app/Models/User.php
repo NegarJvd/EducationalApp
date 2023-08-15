@@ -92,4 +92,9 @@ class User extends Authenticatable
     public function tickets(){
         return $this->hasMany(Ticket::class, 'user_id');
     }
+
+    public function latest_ticket()
+    {
+        return $this->hasOne(Ticket::class, 'user_id')->latest('created_at');
+    }
 }
