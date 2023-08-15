@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TicketResource;
 use App\Http\Resources\UserWithTicketsResource;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class TicketController extends Controller
 {
@@ -17,8 +20,8 @@ class TicketController extends Controller
     function __construct()
     {
         $this->middleware('permission:ticket-list|ticket-reply');
-        $this->middleware('permission:ticket-list', ['only' => ['index']]);
-        $this->middleware('permission:ticket-reply', ['only' => ['edit','update']]);
+        $this->middleware('permission:ticket-list', ['only' => ['index', 'show']]);
+        $this->middleware('permission:ticket-reply', ['only' => ['store']]);
     }
 
     public function index(Request $request)
@@ -54,5 +57,27 @@ class TicketController extends Controller
         $user = User::find($id);
 
         return $this->customSuccess(UserWithTicketsResource::make($user), "لیست تیکت ها");
+    }
+
+    public function store(Request $request){
+        $admin = Auth::user();
+
+        $request->validate([
+            'user_id' => ['required', Rule::in($admin->users()->pluck('id'))],
+            'text' => ['required', 'string', 'max:255'],
+        ]);
+
+        $user = User::find($request->get('user_id'));
+
+        if($user->admin_id != $admin->id)
+            return $this->accessDenied();
+
+        $ticket = Ticket::create([
+            'text' => $request->get('text'),
+            'user_id'=> $request->get('user_id'),
+            'admin_id' => $admin->id
+        ]);
+
+        return $this->customSuccess(TicketResource::make($ticket), "تیکت با موفقیت ثبت شد.");
     }
 }

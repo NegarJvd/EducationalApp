@@ -51,7 +51,7 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
     Route::resource('users', UserController::class);
 
     Route::resource('contents', ContentController::class);
-    Route::resource('tickets', TicketController::class)->only('index', 'show');
+    Route::resource('tickets', TicketController::class)->only('index', 'show', 'store');
 
     //charts
     Route::get('evaluation', [ActionController::class, 'evaluation']);

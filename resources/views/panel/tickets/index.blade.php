@@ -74,17 +74,17 @@
 
                 <div class="chat-right-content" id="chat-right-content"></div>
 
-{{--                    <form class="px-5 pb-3" method="POST" action="{{route('panel.tickets.update', $ticket->id)}}">--}}
-{{--                        @csrf--}}
-{{--                        @method('PUT')--}}
-                <div class="input-group p-3">
-                    <input type="text" class="form-control" placeholder="پاسخ شما" name="text">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-outline-primary"><i class="mdi mdi-rotate-180 mdi-send"></i></button>
-                    </div>
-                </div>
-{{--                    </form>--}}
-
+                @can('ticket-reply')
+                    <form class="px-5 pb-3">
+                        <div class="input-group p-3">
+                            <input type="text" hidden value="" id="user_reply" name="user_id">
+                            <input type="text" class="form-control" placeholder="پاسخ شما" name="text" id="text">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-primary" id="reply_button"><i class="mdi mdi-rotate-180 mdi-send"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                @endcan
             </div>
 
         </div>
