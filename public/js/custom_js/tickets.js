@@ -10,6 +10,9 @@ $(document).ready(function() {
         $('.media-active').removeClass('media-active');
         $(this).addClass('media-active');
 
+        //delete disabled attribute from reply button
+        $('#reply_button').removeAttr('disabled');
+
         //get tickets
         let user_id = $(this).attr('user_id');
         $.ajax({

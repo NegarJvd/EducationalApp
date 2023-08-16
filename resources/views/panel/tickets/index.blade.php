@@ -80,7 +80,7 @@
                             <input type="text" hidden value="" id="user_reply" name="user_id">
                             <input type="text" class="form-control" placeholder="پاسخ شما" name="text" id="text">
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-outline-primary" id="reply_button"><i class="mdi mdi-rotate-180 mdi-send"></i></button>
+                                <button type="button" class="btn btn-outline-primary" id="reply_button" disabled><i class="mdi mdi-rotate-180 mdi-send"></i></button>
                             </div>
                         </div>
                     </form>
