@@ -113,8 +113,9 @@ class UserController extends Controller
         if(Auth::user()->can('all-users-edit')){
             if($user->admin_id == Auth::id()){
                 $clusters = $user->clusters()
-                    ->paginate()
-                    ->unique('content_id');
+                    ->paginate($this->perPagePanel);
+//                    ->unique('content_id');
+
 
                 return view('panel.users.edit',compact('user', 'clusters'));
             }
@@ -124,8 +125,8 @@ class UserController extends Controller
 
         if($user->admin_id == Auth::id()){
             $clusters = $user->clusters()
-                ->paginate()
-                ->unique('content_id');
+                ->paginate($this->perPagePanel);
+//                ->unique('content_id');
 
             return view('panel.users.edit',compact('user', 'clusters'));
         }else{

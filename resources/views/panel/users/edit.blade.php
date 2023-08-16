@@ -335,6 +335,8 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
+
+                                        {{ $clusters->links() }}
                                     </div>
                                 </div>
                             @endif
