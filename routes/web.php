@@ -35,6 +35,7 @@ Route::post('resetPassword', [LoginController::class, 'resetPassword'])->name('r
 Route::get('/panel', [App\Http\Controllers\Panel\HomeController::class, 'index'])->name('panel');
 
 Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.'], function() {
+    //auth
     Route::get('dashboard_info_counts', [App\Http\Controllers\Panel\HomeController::class, 'dashboard_info_counts']);
     Route::get('profile', [App\Http\Controllers\Panel\HomeController::class, 'show_profile']);
     Route::patch('profile', [App\Http\Controllers\Panel\HomeController::class, 'update_profile'])->name('profile');
@@ -42,15 +43,21 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
 ////    Route::post('store_fcm', [HomeController::class, 'storeFCM']);
 ////    Route::get('message_list', [\App\Http\Controllers\UserController::class, 'messages_list']);
 
+    //roles
     Route::resource('roles', RoleController::class);
 
+    //admins
     Route::resource('admins', AdminController::class)->except('destroy');
     Route::post('change_admin_role', [AdminController::class, 'change_admin_role'])->name('change_admin_role');
     Route::get('change_admin_status/{user_id}', [AdminController::class, 'change_admin_status'])->name('change_admin_status');
 
+    //users
     Route::resource('users', UserController::class);
 
-    Route::resource('contents', ContentController::class);
+    //contents
+    Route::resource('contents', ContentController::class)->except('show');
+
+    //tickets
     Route::resource('tickets', TicketController::class)->only('index', 'show', 'store');
 
     //charts

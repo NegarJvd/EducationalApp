@@ -17,9 +17,27 @@ class Content extends Model
     protected $table = 'contents';
     protected $primaryKey = 'id';
 
+    public static function boot()
+    {
+        parent::boot();
+
+        // deleting files of steps
+        self::deleted(function ($model) {
+            //delete files
+        });
+    }
+
     protected $fillable = [
         'name', 'cover_id'
     ];
+
+    protected $appends = [
+        'cover_image',
+    ];
+
+    function getCoverImageAttribute() {
+        return asset('/assets/img/cc1b.jpg');
+    }
 
     public function cover(){
         return $this->belongsTo(File::class, 'cover_id');
@@ -27,5 +45,10 @@ class Content extends Model
 
     public function clusters(){
         return $this->hasMany(Cluster::class, 'content_id');
+    }
+
+    public function users(){
+        return $this->belongsToMany(User::class, 'content_user', 'content_id', 'user_id')
+            ->withPivot('cluster_id');
     }
 }

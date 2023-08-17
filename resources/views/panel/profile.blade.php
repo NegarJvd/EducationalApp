@@ -5,7 +5,6 @@
     <link href='{{asset('css/bootstrap-slider.css')}}' rel='stylesheet'>
     <link href='{{asset('css/basic.min.css')}}' rel='stylesheet'>
     <link href='{{asset('css/dropzone.min.css')}}' rel='stylesheet'>
-{{--    <link href="{{asset('assets/plugins/select2/css/select2.css')}}" rel="stylesheet" />--}}
 @endsection
 
 @section('content')

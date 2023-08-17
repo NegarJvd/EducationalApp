@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @method static whereIn(string $string, $steps_id_list)
+ */
 class Action extends Model
 {
     use HasFactory, SoftDeletes;

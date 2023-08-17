@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @method static pluck(string $string)
+ * @method static whereIn(string $string, $steps_id_list)
  */
 class Step extends Model
 {
@@ -15,6 +16,16 @@ class Step extends Model
 
     protected $table = 'steps';
     protected $primaryKey = 'id';
+
+    public static function boot()
+    {
+        parent::boot();
+
+        // deleting files of steps
+        self::deleted(function ($model) {
+            //delete files
+        });
+    }
 
     protected $fillable = [
         'cluster_id', 'number', 'description', 'cover_id', 'video_id'
