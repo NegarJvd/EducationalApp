@@ -22,7 +22,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item">
-                    دسته بندی ها
+                    {{$content->name}}
                 </li>
             </ol>
         </nav>
@@ -76,7 +76,7 @@
                     <h2>لیست دسته بندی های {{$content->name}}</h2>
 
                     @can('content-create')
-                        <a href="{{ route('panel.contents.create') }}" class="btn btn-outline-primary btn-sm text-uppercase" title="افزودن دسته بندی">
+                        <a href="{{ route('panel.contents.clusters.create', $content->id) }}" class="btn btn-outline-primary btn-sm text-uppercase" title="افزودن دسته بندی">
                             <i class="mdi mdi-24px mdi-note-plus"></i>
                         </a>
                     @endcan
@@ -102,17 +102,29 @@
                             <div class="col-md-6 col-xl-3">
                                 <div class="card  mb-4 p-0">
                                     <h5 class="card-title text-primary pt-4 pb-2 px-3">
-                                        <a href="">
+                                        <a href="{{route('panel.contents.clusters.edit', [$content->id, $cluster->id])}}">
                                             {{$cluster->name}}
                                         </a>
                                     </h5>
 
                                     <img class="card-img rounded-0" src="{{$cluster->cover_image}}">
 
-                                    <div class="card-body">
-                                        <p class="card-text pb-2">
-                                            {{$cluster->description}}
-                                        </p>
+                                    <div class="card-body row">
+
+                                        <div class="col-10">
+                                            <p class="card-text pb-2">
+                                                {{$cluster->description}}
+                                            </p>
+                                        </div>
+
+                                        <div class="col-2 justify-content-center d-flex align-items-end">
+                                            @can('content-delete')
+                                                {!! Form::open(['method' => 'DELETE','route' => ['panel.contents.clusters.destroy', [$content->id, $cluster->id]], 'onsubmit' => 'return confirm("با حدف دسته بندی، تمام فایل ها و رکورد های ثبت شده توسط مراجعه کنندگان حذف خواهند شد. برای این کار مطمئن هستید؟")']) !!}
+                                                <button type="submit" class="btn btn-sm btn-outline-primary float-right" title="حذف"><span class="mdi mdi-trash-can"></span></button>
+                                                {!! Form::close() !!}
+                                            @endcan
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

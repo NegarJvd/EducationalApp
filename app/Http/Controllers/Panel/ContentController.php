@@ -21,7 +21,7 @@ class ContentController extends Controller
         $this->middleware('permission:content-list', ['only' => ['index']]);
         $this->middleware('permission:content-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:content-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:content-delete', ['only' => ['delete']]);
+        $this->middleware('permission:content-delete', ['only' => ['destroy']]);
     }
 
     public function index(Request $request){

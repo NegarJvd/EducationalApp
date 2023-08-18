@@ -31,6 +31,18 @@ class Step extends Model
         'cluster_id', 'number', 'description', 'cover_id', 'video_id'
     ];
 
+    protected $appends = [
+        'cover_image', 'video_file'
+    ];
+
+    function getCoverImageAttribute() {
+        return asset('/assets/img/cc1b.jpg');
+    }
+
+    function getVideoFileAttribute() {
+        return asset('/assets/img/cd_5.mp4');
+    }
+
     public function cover(){
         return $this->belongsTo(File::class, 'cover_id');
     }
@@ -41,6 +53,10 @@ class Step extends Model
 
     public function cluster(){
         return $this->belongsTo(Cluster::class, 'cluster_id');
+    }
+
+    public function actions(){
+        return $this->hasMany(Action::class, 'step_id');
     }
 
 }

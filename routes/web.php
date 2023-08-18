@@ -3,9 +3,11 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Panel\ActionController;
 use App\Http\Controllers\Panel\AdminController;
+use App\Http\Controllers\Panel\ClusterController;
 use App\Http\Controllers\Panel\ContentController;
 use App\Http\Controllers\Panel\HomeController;
 use App\Http\Controllers\Panel\RoleController;
+use App\Http\Controllers\Panel\StepController;
 use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\Panel\UsersContentController;
@@ -56,6 +58,8 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
 
     //contents
     Route::resource('contents', ContentController::class)->except('show');
+    Route::resource('contents.clusters', ClusterController::class)->except('index', 'show');
+    Route::resource('contents.clusters.steps', StepController::class)->only('store', 'update', 'destroy');
 
     //tickets
     Route::resource('tickets', TicketController::class)->only('index', 'show', 'store');

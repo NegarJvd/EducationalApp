@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @method static pluck(string $string)
  * @method static find($content_id)
+ * @method static create(array $only)
  */
 class Content extends Model
 {
