@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Action;
 use App\Models\Cluster;
 use App\Models\Content;
+use App\Models\File;
 use App\Models\Step;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ContentController extends Controller
 {
@@ -48,16 +50,17 @@ class ContentController extends Controller
 
     public function store(Request $request){
         $request->validate([
-            'name' => ['required', 'string', 'max:255']
+            'name' => ['required', 'string', 'max:255'],
+            'cover_id' => ['nullable', Rule::in(File::pluck('id'))]
         ]);
 
-        $content = Content::create($request->only('name'));
+        $content = Content::create($request->only('name', 'cover_id'));
 
         return redirect()->route('panel.contents.edit', $content->id)
                         ->with('success', 'محتوا با موفقیت ایجاد شد.');
     }
 
-    public function edit(Request $request, Content $content){
+    public function edit(Content $content){
         $clusters = $content->clusters()->paginate($this->perPagePanel);
 //        $search = $request->get('search');
 //        if (!is_null($search)){
@@ -97,7 +100,7 @@ class ContentController extends Controller
         Cluster::whereIn('id', $clusters_id_list)->delete();
 
         //delete content
-        $delete = $content->delete();
+        $content->delete();
 
         return redirect()->back()
                 ->with('success', 'محتوا و تمام فایل ها و رکورد های مربوط به این محتوا حذف شد.');

@@ -133,12 +133,4 @@ class HomeController extends Controller
 
         return redirect()->back()->with('success', 'اطلاعات شما با موفقیت به روز رسانی شد.');
     }
-
-    public function upload_file(){
-        $data = [
-            'id' => 1,
-            'path' => asset('/assets/img/cd_5.mp4')
-        ];
-        return $this->customSuccess($data);
-    }
 }

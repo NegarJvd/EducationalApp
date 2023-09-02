@@ -5,10 +5,10 @@ use App\Http\Controllers\Panel\ActionController;
 use App\Http\Controllers\Panel\AdminController;
 use App\Http\Controllers\Panel\ClusterController;
 use App\Http\Controllers\Panel\ContentController;
-use App\Http\Controllers\Panel\HomeController;
 use App\Http\Controllers\Panel\RoleController;
 use App\Http\Controllers\Panel\StepController;
 use App\Http\Controllers\Panel\TicketController;
+use App\Http\Controllers\Panel\UploadController;
 use App\Http\Controllers\Panel\UserController;
 use App\Http\Controllers\Panel\UsersContentController;
 use Illuminate\Support\Facades\Auth;
@@ -76,12 +76,9 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
 //    Route::get('admins_list', [AdminController::class, 'search_in_admins_list_json']);
 //    Route::get('users_list', [UserController::class, 'search_in_users_list_json']);
 
-//
-//    //upload file.
-    Route::post('upload', [HomeController::class, 'upload_file']);
-//    Route::delete('delete_file/{upload_id}', [UploadController::class, 'delete_file']);
-//
-////    Route::get('options', [OptionsController::class, 'options'])->name('options');
+    //upload file.
+    Route::post('upload', [UploadController::class, 'upload_file']);
+    Route::delete('delete_file/{upload_id}', [UploadController::class, 'delete_file']);
 
 });
 

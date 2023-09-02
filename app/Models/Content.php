@@ -37,6 +37,8 @@ class Content extends Model
     ];
 
     function getCoverImageAttribute() {
+        if(!is_null($this->attributes['cover_id']) and file_exists($this->cover->file_path))
+            return asset($this->cover->file_path);
         return asset('/assets/img/cc1b.jpg');
     }
 
