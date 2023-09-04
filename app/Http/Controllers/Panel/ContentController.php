@@ -74,10 +74,11 @@ class ContentController extends Controller
 
     public function update(Request $request, Content $content){
         $request->validate([
-            'name' => ['required', 'string', 'max:255']
+            'name' => ['required', 'string', 'max:255'],
+            'cover_id' => ['nullable', Rule::in(File::pluck('id'))]
         ]);
 
-        $content->update($request->only('name'));
+        $content->update($request->only('name', 'cover_id'));
 
         return back()->with('success', 'اطلاعات محتوا با موفقیت ویرایش شد.');
     }

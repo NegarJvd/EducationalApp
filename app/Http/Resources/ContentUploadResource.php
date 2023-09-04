@@ -9,6 +9,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @property mixed file_path
  * @property mixed id
+ * @property mixed file_name
+ * @property mixed size
  */
 class ContentUploadResource extends JsonResource
 {
@@ -23,7 +25,9 @@ class ContentUploadResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'file_path' => asset($this->file_path)
+            'file_path' => asset($this->file_path),
+            'file_name' => $this->file_name,
+            'size' => $this->size
         ];
     }
 }

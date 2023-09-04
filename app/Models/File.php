@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @method static pluck(string $string)
@@ -21,6 +22,19 @@ class File extends Model
     protected $fillable = [
         'file_path'
     ];
+
+    protected $appends = [
+        'file_name', 'size'
+    ];
+
+    function getFileNameAttribute() {
+        $array = explode("/",$this->attributes['file_path']);
+        return end($array);
+    }
+
+    function getSizeAttribute() {
+        return Storage::size($this->attributes['file_path']);
+    }
 
 //    public function admin(){
 //        return $this->hasOne(Admin::class, "avatar_id");

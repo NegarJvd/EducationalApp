@@ -4,7 +4,7 @@ Dropzone.options.indexPictureDropzone = {
     dictRemoveFile: 'حذف تصویر',
     dictCancelUpload: 'لغو بارگذاری',
     acceptedFiles: "image/*,",
-    dictMaxFilesExceeded: 'امکان آپلود فایل بیشتر وجود ندارد.',
+    dictMaxFilesExceeded: 'امکان آپلود بیش از 1 فایل وجود ندارد و فقط تصویر اول در سیستم ثبت شده است.',
     maxFiles: 1,
     headers: {
         'X-CSRF-Token': $('input[name="_token"]').val(),
@@ -12,6 +12,24 @@ Dropzone.options.indexPictureDropzone = {
     },
     addRemoveLinks: true,
     init: function() {
+        let myDropzone = this;
+        let id = $('#file_id').val()
+
+        if(id !== ''){
+            $.ajax({
+                url: '/panel/fetch_file/' + id,
+                type: 'get',
+                dataType: 'json',
+                success: function (response) {
+                    var mockFile = {name: response.data.file_name, size: response.data.size};
+
+                    myDropzone.emit("addedfile", mockFile);
+                    myDropzone.emit("thumbnail", mockFile, response.data.file_path);
+                    myDropzone.emit("complete", mockFile);
+                }
+            });
+        }
+
         this.on("removedfile", file => {
             let id = $('#file_id').val()
 
@@ -21,6 +39,8 @@ Dropzone.options.indexPictureDropzone = {
                 async: true,
                 dataType: 'json',
                 success: function (data, textStatus, jQxhr) {
+                    $('#file_id').val('').change();
+
                     response = JSON.parse(jQxhr.responseText);
                     console.log(response.message);
                 },
@@ -40,27 +60,15 @@ Dropzone.options.indexPictureDropzone = {
     },
     success: function (file, response) {
         $('#file_id').val(response.data.id).change();
-
-        var picture_show_div = $('#index_picture').parent();
-        picture_show_div.empty();
-
-        picture_show_div.append(
-            '<div class="col" id="index_picture_show_div">' +
-            '<div class="mdi mdi-close btn btn-sm btn-outline-danger btn-pill" id="delete_upload"></div>'+
-            '<img width="100%" src="' + response.data.file_path  + '" id="index_picture_show" />'+
-            '</div>'
-        );
     },
     error: function (file, response) {
-        $('#file_id').val('').change();
-
         if (response.hasOwnProperty('errors') && response.errors.hasOwnProperty('file')){
             var errors = response.errors.file;
             for (i=0; i<errors.length; i++){
                 swal("خطا!", errors[i], "error");
             }
         }else {
-            swal("خطا!", "خطای سرور...", "error");
+            swal("خطا!", response, "error");
         }
 
     }

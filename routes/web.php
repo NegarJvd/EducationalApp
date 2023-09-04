@@ -77,6 +77,7 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
 //    Route::get('users_list', [UserController::class, 'search_in_users_list_json']);
 
     //upload file.
+    Route::get('fetch_file/{file_id}', [UploadController::class, 'fetch_file']);
     Route::post('upload', [UploadController::class, 'upload_file']);
     Route::delete('delete_file/{upload_id}', [UploadController::class, 'delete_file']);
 

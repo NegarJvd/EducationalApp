@@ -22,9 +22,13 @@ class Content extends Model
     {
         parent::boot();
 
-        // deleting files of steps
+        // deleting files
         self::deleted(function ($model) {
-            //delete files
+            $content_cover = $model->cover_id;
+            $file = File::withTrashed()->find($content_cover);
+            if (file_exists($file->file_path)){
+                unlink($file->file_path);
+            }
         });
     }
 

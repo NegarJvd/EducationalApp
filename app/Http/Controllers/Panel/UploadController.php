@@ -166,4 +166,9 @@ class UploadController extends Controller
             return $this->customError("فایل یافت نشد.");
         }
     }
+
+    public function fetch_file($file_id){
+        $file = File::find($file_id);
+        return $this->customSuccess(ContentUploadResource::make($file), "اطلاعات فایل");
+    }
 }
