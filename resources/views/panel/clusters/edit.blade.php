@@ -47,7 +47,7 @@
 
                     <div class="row">
                         <div class="col-md-12 col-xl-12">
-                            {!! Form::model($cluster, ['method' => 'PATCH','route' => ['panel.contents.clusters.update', [$content->id, $cluster->id]]]) !!}
+                            {!! Form::model($cluster, ['method' => 'PATCH','route' => ['panel.contents.clusters.update', [$content->id, $cluster->id]], 'id' => 'cluster_update_form']) !!}
 
                             <div class="col-12 row">
                                 <div class="col-6">
@@ -57,31 +57,37 @@
                                 <div class="col-6">
                                     {!! Form::textarea('description', null, array('class' => 'form-control', 'id'=>'description', 'rows' => '4', 'style' => 'height:40%;')) !!}
                                 </div>
+
+                                <div class="col-6">
+                                    {!! Form::text('cover_id', null, array('hidden' => 'hidden', 'id'=>'file_id')) !!}
+                                </div>
                             </div>
 
-                            <div class="col-12 d-flex justify-content-center">
-                                <div class="col-6">
+                            {!! Form::close() !!}
 
+                            <div class="col-12 d-flex justify-content-center mb-3">
+                                <div class="col-6" id="index">
+                                    <form action="{{url('panel/upload')}}" method="POST" class="dropzone" id="index_picture_dropzone">
+                                        @csrf
+                                        <input name="type" value="cluster_cover" hidden />
+                                        <input name="content_id" value="{{$content->id}}" hidden />
+                                        <div class="dz-message" data-dz-message>
+                                            <h5 class="m-dropzone__msg-title">
+                                                فایل خود را انتخاب کنید یا در این کادر رها کنید.
+                                            </h5>
+                                            <span class="m-dropzone__msg-desc">امکان اپلود 1 تصویر</span>
+                                        </div>
+                                    </form>
                                 </div>
-
-                                {{--                                    <div class="dz-message col-6" data-dz-message>--}}
-                                {{--                                        <h5 class="m-dropzone__msg-title">--}}
-                                {{--                                            فایل خود را انتخاب کنید یا در این کادر رها کنید.--}}
-                                {{--                                        </h5>--}}
-                                {{--                                        <span class="m-dropzone__msg-desc">امکان اپلود 1تصویر</span>--}}
-                                {{--                                    </div>--}}
-
-
                             </div>
 
                             <div class="d-flex justify-content-center">
-                                <button type="submit" class="ladda-button btn btn-primary mb-2 btn-pill">
+                                <button type="button" class="ladda-button btn btn-primary mb-2 btn-pill" id="submit_button">
                                     <span class="ladda-label">ویرایش</span>
                                     <span class="ladda-spinner"></span>
                                 </button>
                             </div>
 
-                            {!! Form::close() !!}
                         </div>
                     </div>
 
@@ -163,9 +169,15 @@
 
 @section('scripts')
     <script src="{{asset('js/dropzone.min.js')}}"></script>
+    <script src="{{asset('js/custom_js/dropzone_upload_file.js')}}"></script>
+
     <script>
         //description_for_edit
         $(document).ready(function() {
+            $('#submit_button').on('click', function () {
+                $('#cluster_update_form').submit();
+            });
+
             $('.update_step').on('submit', function() {
                 var form_description = $(this).find('.description');
                 var form_cover_id = $(this).find('.cover_id');
@@ -181,45 +193,5 @@
                 return true;
             });
         });
-
-        Dropzone.options.contentEditDropzone = {
-            paramName: "file", // The name that will be used to transfer the file
-            uploadMultiple: false,
-            acceptedFiles: "image/*,",
-            dictRemoveFile: 'حذف تصویر',
-            dictMaxFilesExceeded: 'امکان آپلود فایل بیشتر وجود ندارد.',
-            maxFiles: 1,
-            maxFilesize: 2, // MB
-            addRemoveLinks: true,
-            accept: function(file, done) {
-                done();
-            }
-        };
-
-        function delete_profile(id) {
-            if(confirm("برای حذف تصویر کاور محتوا مطمئن هستید؟")){
-                $.ajax({
-                    url: '/panel/delete_file/' + id,
-                    type: 'DELETE',
-                    async: true,
-                    dataType: 'json',
-                    success: function (data, textStatus, jQxhr) {
-                        response = JSON.parse(jQxhr.responseText);
-                        console.log(response);
-                        alert("تصویر با موفقیت حذف شد.");
-                        location.reload();
-                    },
-                    error: function (jqXhr, textStatus, errorThrown) {
-                        response = JSON.parse(jqXhr.responseText);
-                        console.log(response);
-                        alert("حذف تصویر با مشکل روبه رو شده است.");
-                    },
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-            }
-        }
     </script>
 @endsection

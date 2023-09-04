@@ -47,7 +47,7 @@
 
                     <div class="row">
                         <div class="col-md-12 col-xl-12">
-                            {!! \Form::open(array('route' => ['panel.contents.clusters.store', $content], 'method'=>'POST', 'id' => 'cluster_update_form')) !!}
+                            {!! \Form::open(array('route' => ['panel.contents.clusters.store', $content], 'method'=>'POST', 'id' => 'cluster_create_form')) !!}
 
                             <div class="form-group row">
                                 <div class="col-12 col-md-2 text-left">
@@ -119,7 +119,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#submit_button').on('click', function () {
-                $('#cluster_update_form').submit();
+                $('#cluster_create_form').submit();
             });
         })
     </script>

@@ -33,7 +33,7 @@ class ClusterController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'cover_id' => ['required', Rule::in(File::pluck('id'))]
+            'cover_id' => ['nullable', Rule::in(File::pluck('id'))]
         ]);
 
         $data = array_merge($request->only('name', 'description', 'cover_id'));
@@ -55,7 +55,7 @@ class ClusterController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
-            'cover_id' => ['required', Rule::in(File::pluck('id'))]
+            'cover_id' => ['nullable', Rule::in(File::pluck('id'))]
         ]);
 
         $cluster->update($request->only('name', 'description', 'cover_id'));
