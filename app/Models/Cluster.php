@@ -23,9 +23,13 @@ class Cluster extends Model
     {
         parent::boot();
 
-        // deleting files of steps
+        // deleting files
         self::deleted(function ($model) {
-            //delete files
+            $cluster_cover = $model->cover_id;
+            $file = File::withTrashed()->find($cluster_cover);
+            if (file_exists($file->file_path)){
+                unlink($file->file_path);
+            }
         });
     }
 
