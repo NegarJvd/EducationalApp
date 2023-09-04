@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Action;
 use App\Models\Cluster;
 use App\Models\Content;
+use App\Models\File;
 use App\Models\Step;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ClusterController extends Controller
 {
@@ -31,10 +33,10 @@ class ClusterController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
+            'cover_id' => ['required', Rule::in(File::pluck('id'))]
         ]);
 
-        //TODO
-        $data = array_merge($request->only('name', 'description'), ['cover_id' => 1]);
+        $data = array_merge($request->only('name', 'description', 'cover_id'));
 
         $cluster = $content->clusters()
                             ->create($data);
@@ -53,9 +55,10 @@ class ClusterController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
+            'cover_id' => ['required', Rule::in(File::pluck('id'))]
         ]);
 
-        $cluster->update($request->only('name', 'description'));
+        $cluster->update($request->only('name', 'description', 'cover_id'));
 
         return back()->with('success', 'اطلاعات دسته بندی با موفقیت ویرایش شد.');
     }

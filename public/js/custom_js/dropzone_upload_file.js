@@ -62,11 +62,15 @@ Dropzone.options.indexPictureDropzone = {
         $('#file_id').val(response.data.id).change();
     },
     error: function (file, response) {
+        console.log(response)
+
         if (response.hasOwnProperty('errors') && response.errors.hasOwnProperty('file')){
             var errors = response.errors.file;
             for (i=0; i<errors.length; i++){
                 swal("خطا!", errors[i], "error");
             }
+        }if (response.hasOwnProperty('message')){
+            swal("خطا!", response.message, "error");
         }else {
             swal("خطا!", response, "error");
         }
