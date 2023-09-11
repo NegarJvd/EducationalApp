@@ -43,7 +43,7 @@ class Cluster extends Model
     ];
 
     function getCoverImageAttribute() {
-        if(!is_null($this->attributes['cover_id']) and file_exists($this->cover->file_path))
+        if(array_key_exists('cover_id', $this->attributes) and !is_null($this->attributes['cover_id']) and file_exists($this->cover->file_path))
             return asset($this->cover->file_path);
         return asset('/assets/img/cc1b.jpg');
     }

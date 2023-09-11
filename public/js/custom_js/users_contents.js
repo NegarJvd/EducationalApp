@@ -32,6 +32,7 @@ $(document).ready(function() {
                 },
                 error: function (jqXhr, textStatus, errorThrown) {
                     let response = JSON.parse(jqXhr.responseText);
+                    console.log(response)
                     swal("خطا!", response.message, "error");
                 },
 
