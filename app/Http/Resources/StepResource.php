@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
  * @property mixed id
  * @property mixed number
  * @property mixed description
- * @property mixed cover
- * @property mixed video
+ * @property mixed cover_image
+ * @property mixed video_file
  *
  */
 class StepResource extends JsonResource
@@ -21,8 +21,8 @@ class StepResource extends JsonResource
             'id' => $this->id,
             'number' => $this->number,
             'description' => $this->description,
-            'cover_path' => $this->cover->file_path,
-            'video_path' => $this->video->file_path,
+            'cover_path' => $this->cover_image,
+            'video_path' => $this->video_file,
         ];
     }
 }

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 /**
  * @property mixed id
  *@property mixed name
- * @property mixed cover
+ * @property mixed cover_image
  *
  */
 class ContentResource extends JsonResource
@@ -20,7 +20,7 @@ class ContentResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'cover_path' => $this->cover->file_path,
+            'cover_path' => $this->cover_image,
             'is_active' => in_array($this->id, $user->contents()->pluck('id')->toArray()) ? 1 : 0
         ];
     }
