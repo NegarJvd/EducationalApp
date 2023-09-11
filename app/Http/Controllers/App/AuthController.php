@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redis;
+// use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 //use Negar\Smsirlaravel\Smsirlaravel;
@@ -54,7 +54,7 @@ class AuthController extends Controller
         }
 
         $password = "1234";//rand(1111, 9999);
-        Redis::set($user->phone, Hash::make($password), 'EX', 300); //expire in 5 min
+        //Redis::set($user->phone, Hash::make($password), 'EX', 300); //expire in 5 min
 //        Smsirlaravel::ultraFastSend(['otp'=>$password],$this->sms_template('otp'),$user->phone); //TODO
 
         return $this->customSuccess($is_first_time, 'رمز یکبار مصرف برای ' . $request->get('phone') . ' ارسال شد.');
@@ -67,10 +67,13 @@ class AuthController extends Controller
             'otp' => ['required', 'string'],
         ]);
 
-        $right_otp = Redis::get($request->get('phone'));
-        Redis::del($request->get('phone'));
+        $right_otp = "1234";
 
-        if (Hash::check($request->get('otp'), $right_otp)) {
+        //$right_otp = Redis::get($request->get('phone'));
+        //Redis::del($request->get('phone'));
+
+        //if (Hash::check($request->get('otp'), $right_otp)) {
+        if ($request->get('otp') == $right_otp) {
             $user = User::where('phone', $request->get('phone'))->first();
 
             Auth::login($user);
@@ -103,7 +106,7 @@ class AuthController extends Controller
         if (!$user) return $this->customError("کاربر یافت نشد.");
 
         $verification_code = "1234"; //rand(1111, 9999);
-        Redis::set('verification_' . $user->phone, Hash::make($verification_code), 'EX', 300); //expire in 5 min
+        // Redis::set('verification_' . $user->phone, Hash::make($verification_code), 'EX', 300); //expire in 5 min
         //TODO
 //        Smsirlaravel::ultraFastSend(['verification_code'=>$verification_code],$this->sms_template('verification_code'),$user->phone);
 
@@ -122,17 +125,19 @@ class AuthController extends Controller
 
         if (!$user) return $this->customError("کاربر یافت نشد.");
 
-        if (Hash::check($request->get('verification_code'), Redis::get('verification_' . $user->phone))) {
+
+        // if (Hash::check($request->get('verification_code'), Redis::get('verification_' . $user->phone))) {
+        if ($request->get('verification_code') == "1234") {
             $user->password = Hash::make($request->get('new_password'));
             $user->save();
 
         } else {
-            Redis::del('verification_' . $user->phone);
+            // Redis::del('verification_' . $user->phone);
 
             return $this->customError("کد تایید وارد شده صحیح نمی باشد. لطفا برای دریافت مجدد کد تایید اقدام فرمایید.");
         }
 
-        Redis::del('verification_' . $user->phone);
+        // Redis::del('verification_' . $user->phone);
 
         return $this->customSuccess(1, "رمز عبور با موفقیت تغییر یافت.");
     }
@@ -168,6 +173,7 @@ class AuthController extends Controller
             'first_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'unique:users,email,' . $user->id],
+            'password' => ['nullable', 'min:8', 'string'],
             'birth_date' => ['nullable', 'date'],
             'gender' => ['nullable', Rule::in(User::gender())],
             'address' => ['nullable', 'string', 'max:255'],
@@ -188,6 +194,11 @@ class AuthController extends Controller
         ])->validate();
 
         $user->update($new_data);
+
+        if ($request->get('password')){
+            $user->password = Hash::make($request->get('password'));
+            $user->save();
+        }
 
         return $this->customSuccess(UserResource::make($user), "اطلاعات کابر با موفقیت به روز رسانی شد.");
     }
