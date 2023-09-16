@@ -3,15 +3,24 @@
 namespace App\Http\Controllers\App;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ActiveContentResource;
 use App\Http\Resources\StepResource;
 use App\Http\Resources\ContentResource;
 use App\Models\Cluster;
 use App\Models\Content;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ContentController extends Controller
 {
-    public function contents_list(){
+    public function contents_list(Request $request){
+        $request->validate([
+            'is_active' => ['nullable', Rule::in([0, 1])]
+        ]);
+
+        if($request->get('is_active') == 1)
+            return $this->customSuccess(ActiveContentResource::collection(Auth::user()->contents()->orderBy('id', 'asc')->get()), "لیست محتوا های فعال");
         return $this->customSuccess(ContentResource::collection(Content::all()), "لیست محتوا ها");
     }
 
