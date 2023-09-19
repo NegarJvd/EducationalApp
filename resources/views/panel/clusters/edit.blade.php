@@ -136,7 +136,7 @@
                     {!! $steps->links() !!}
 
                     <div class="row card p-3 mb-3 d-flex justify-content-center border border-secondary">
-                        {!! Form::open(['method' => 'POST','route' => ['panel.contents.clusters.steps.store', [$content->id, $cluster->id]]]) !!}
+                        {!! Form::open(['method' => 'POST','route' => ['panel.contents.clusters.steps.store', [$content->id, $cluster->id]], 'id' => 'new_step_form']) !!}
                         <div class="col-12 row justify-content-between align-self-center mb-2">
                             <div class="col-6 p-0">
                                 مرحله {{$steps->total() + 1}} :
@@ -147,18 +147,51 @@
                             {!! Form::textarea('description', null, ['class' => 'form-control col-12', 'placeholder' => 'توضیحات ...', 'rows' => '4', 'style' => 'height:100%;']) !!}
                         </div>
 
+                        <input name="cover_id" id="new_step_cover_id" hidden>
+                        <input name="video_id" id="new_step_video_id" hidden>
+
+                        {!! Form::close() !!}
+
                         <div class="col-12 row justify-content-center align-self-center mb-2">
-                            <input name="cover_id">
-                            <input name="video_id">
+
+                            <div class="col-6" id="new_step_cover_div">
+                                <form action="{{url('panel/upload')}}" method="POST" class="dropzone" id="new_step_cover_form">
+                                    @csrf
+                                    <input name="type" value="step_cover" hidden />
+                                    <input name="content_id" value="{{$content->id}}" hidden />
+                                    <input name="cluster_id" value="{{$cluster->id}}" hidden />
+                                    <div class="dz-message" data-dz-message>
+                                        <h5 class="m-dropzone__msg-title">
+                                            فایل<b class="text-primary"> تصویر کاور </b> خود را انتخاب کنید یا در این کادر رها کنید.
+                                        </h5>
+                                        <span class="m-dropzone__msg-desc">امکان اپلود 1 تصویر</span>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col-6" id="new_step_video_div">
+                                <form action="{{url('panel/upload')}}" method="POST" class="dropzone" id="new_step_video_form">
+                                    @csrf
+                                    <input name="type" value="step_video" hidden />
+                                    <input name="content_id" value="{{$content->id}}" hidden />
+                                    <input name="cluster_id" value="{{$cluster->id}}" hidden />
+                                    <div class="dz-message" data-dz-message>
+                                        <h5 class="m-dropzone__msg-title">
+                                            فایل<b class="text-primary"> ویدیو </b> خود را انتخاب کنید یا در این کادر رها کنید.
+                                        </h5>
+                                        <span class="m-dropzone__msg-desc">امکان اپلود 1 ویدیو</span>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <button type="submit" class="ladda-button btn btn-primary mb-2 btn-pill">
+                            <button type="button" class="ladda-button btn btn-primary mb-2 btn-pill" id="new_step_submit_button">
                                 <span class="ladda-label">ذخیره</span>
                                 <span class="ladda-spinner"></span>
                             </button>
                         </div>
-                        {!! Form::close() !!}
+
                     </div>
 
                 </div>
@@ -170,12 +203,17 @@
 @section('scripts')
     <script src="{{asset('js/dropzone.min.js')}}"></script>
     <script src="{{asset('js/custom_js/dropzone_upload_file.js')}}"></script>
+    <script src="{{asset('js/custom_js/steps.js')}}"></script>
 
     <script>
         //description_for_edit
         $(document).ready(function() {
             $('#submit_button').on('click', function () {
                 $('#cluster_update_form').submit();
+            });
+
+            $('#new_step_submit_button').on('click', function () {
+                $('#new_step_form').submit();
             });
 
             $('.update_step').on('submit', function() {
