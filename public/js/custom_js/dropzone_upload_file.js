@@ -26,6 +26,12 @@ Dropzone.options.indexPictureDropzone = {
                     myDropzone.emit("addedfile", mockFile);
                     myDropzone.emit("thumbnail", mockFile, response.data.file_path);
                     myDropzone.emit("complete", mockFile);
+                    myDropzone.options.maxFiles = 0;
+
+                    $('[data-dz-thumbnail]').css('height', '120');
+                    $('[data-dz-thumbnail]').css('width', '120');
+                    $('[data-dz-thumbnail]').css('object-fit', 'cover');
+
                 }
             });
         }
