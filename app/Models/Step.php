@@ -36,10 +36,14 @@ class Step extends Model
     ];
 
     function getCoverImageAttribute() {
+        if(array_key_exists('cover_id', $this->attributes) and !is_null($this->attributes['cover_id']) and file_exists($this->cover->file_path))
+            return asset($this->cover->file_path);
         return asset('/assets/img/cc1b.jpg');
     }
 
     function getVideoFileAttribute() {
+        if(array_key_exists('video_id', $this->attributes) and !is_null($this->attributes['video_id']) and file_exists($this->video->file_path))
+            return asset($this->video->file_path);
         return asset('/assets/img/cd_5.mp4');
     }
 
