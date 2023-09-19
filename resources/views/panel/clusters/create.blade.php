@@ -86,9 +86,9 @@
                                         <input name="type" value="cluster_cover" hidden />
                                         <input name="content_id" value="{{$content->id}}" hidden />
                                         <div class="dz-message" data-dz-message>
-                                            <h5 class="m-dropzone__msg-title">
+                                            <p class="m-dropzone__msg-title">
                                                 فایل خود را انتخاب کنید یا در این کادر رها کنید.
-                                            </h5>
+                                            </p>
                                             <span class="m-dropzone__msg-desc">امکان اپلود 1 تصویر</span>
                                         </div>
                                     </form>
