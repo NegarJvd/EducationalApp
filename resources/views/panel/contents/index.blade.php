@@ -78,7 +78,7 @@
                                         <div class="col-2 justify-content-center d-flex align-items-end">
                                             @can('content-delete')
                                                 {!! Form::open(['method' => 'DELETE','route' => ['panel.contents.destroy', $content->id], 'onsubmit' => 'return confirm("با حدف محتوا، تمام فایل ها و رکورد های ثبت شده توسط مراجعه کنندگان حذف خواهند شد. برای این کار مطمئن هستید؟")']) !!}
-                                                <button type="submit" class="btn btn-sm btn-outline-primary float-right" title="حذف"><span class="mdi mdi-trash-can"></span></button>
+                                                <button type="submit" class="btn btn-sm btn-outline-primary float-right" title="حذف"><span class="mdi mdi-18px mdi-trash-can"></span></button>
                                                 {!! Form::close() !!}
                                             @endcan
                                         </div>
