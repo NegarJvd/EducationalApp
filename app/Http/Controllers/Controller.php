@@ -30,9 +30,9 @@ class Controller extends BaseController
     public function sms_template($name){
         switch ($name){
             case "otp":
-                return 123;
-            case "verification_code":
-                return 625165;
+                return 828717;
+            case "password":
+                return 121873;
         }
 
         return 65151;

@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "cryptommer/smsir": "^1.1",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
@@ -30,8 +31,7 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/",
-            "Negar\\Smsirlaravel\\": "vendor/Negar/smsirlaravel/src/"
+            "Database\\Seeders\\": "database/seeders/"
         },
         "files" : [
             "app/Components/Helpers.php"
