@@ -43,8 +43,10 @@ class StepController extends Controller
         $request->validate([
             'description' => ['required', 'string'],
             'cover_id' => ['nullable', Rule::in(File::pluck('id'))],
-            'video_id' => ['required', Rule::in(File::pluck('id'))],
+            'video_id' => ['nullable', Rule::in(File::pluck('id'))],
         ]);
+
+        //delete ex files
 
         $step->update($request->only('description', 'cover_id', 'video_id'));
 

@@ -25,6 +25,10 @@ function remove_file_function(id, which){
                 $('#new_step_cover_id').val('').change();
             }else if(which === "video"){
                 $('#new_step_video_id').val('').change();
+            }else if(which === "update_cover"){
+                $('#update_step_cover_id').val('').change();
+            }else if(which === "update_video"){
+                $('#update_step_video_id').val('').change();
             }
         },
         error: function (jqXhr, textStatus, errorThrown) {
@@ -34,6 +38,106 @@ function remove_file_function(id, which){
         headers: {
             'Accept': 'application/json',
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+}
+
+function update_dropzone(which, file_id = ''){
+    let my_dropzone;
+    let form_element_id;
+
+    if(which === "cover"){
+        my_dropzone = Dropzone.forElement("#update_step_cover_form");
+        form_element_id = "#update_step_cover_form";
+    }else if(which === "video"){
+        my_dropzone = Dropzone.forElement("#update_step_video_form");
+        form_element_id = "#update_step_video_form";
+    }
+
+    my_dropzone.emit("resetFiles");
+    my_dropzone.destroy();
+
+    new Dropzone(form_element_id, {
+        paramName: "file", // The name that will be used to transfer the file
+        uploadMultiple: false,
+        dictRemoveFile: (which === 'cover') ? "حذف تصویر" : "حذف ویدیو",
+        dictCancelUpload: 'لغو بارگذاری',
+        acceptedFiles: (which === 'cover') ? "image/*," : "video/*,",
+        dictMaxFilesExceeded: 'امکان آپلود بیش از 1 فایل وجود ندارد.',
+        maxFiles: 1,
+        headers: {
+            'X-CSRF-Token': $('input[name="_token"]').val(),
+            'Accept': 'application/json'
+        },
+        addRemoveLinks: true,
+        init: function() {
+            let dropzone = this;
+
+            if(file_id !== ''){
+                $.ajax({
+                    url: '/panel/fetch_file/' + file_id,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (response) {
+                        var mockFile = {
+                            name: response.data.file_name,
+                            size: response.data.size,
+                            accepted: true,
+                            status: 'success'
+                        };
+
+                        dropzone.emit("addedfile", mockFile);
+                        if(which === 'cover'){
+                            dropzone.emit("thumbnail", mockFile, response.data.file_path);
+                        }else if(which === 'video'){
+                            dropzone.emit("thumbnail", mockFile, "/assets/img/play_icon.png");
+                        }
+
+                        dropzone.emit("complete", mockFile);
+                        dropzone.files.push( mockFile );
+                        dropzone.options.maxFiles = 0;
+
+                        $('[data-dz-thumbnail]').css('height', '120');
+                        $('[data-dz-thumbnail]').css('width', '120');
+                        $('[data-dz-thumbnail]').css('object-fit', 'cover');
+                    }
+                });
+            }
+
+            this.on("removedfile", function (file, hardRemove = 1) {
+                if(hardRemove){
+                    if(which === 'cover'){
+                        remove_file_function(file_id, "update_cover");
+                    }else if(which === 'video'){
+                        remove_file_function(file_id, "update_video")
+                    }
+                }
+
+                dropzone.options.maxFiles = 1;
+            });
+
+            this.on("resetFiles", function () {
+                for (let file of this.files) {
+                    this.emit("removedfile", file, 0);
+                }
+                this.files = [];
+                dropzone.options.maxFiles = 1;
+                return this.emit("reset");
+            });
+        },
+        accept: function(file, done) {
+            done();
+        },
+        success: function (file, response) {
+            if(which === "cover"){
+                $('#update_step_cover_id').val(response.data.id).change();
+            }else if(which === "video"){
+                $('#update_step_video_id').val(response.data.id).change();
+            }
+
+        },
+        error: function (file, response) {
+            error_function(file, response)
         }
     });
 }
@@ -99,3 +203,23 @@ Dropzone.options.newStepVideoForm = {
         error_function(file, response)
     }
 };
+
+$('.update_step').on('click', function () {
+    let step_number = $(this).attr('step_number')
+    let route = $(this).attr('route')
+
+    $('#edited_step_number').text(step_number)
+    $('#update_step_form').attr('action', route)
+
+    let parent = $(this).parent().parent().parent();
+    let description = parent.find('.step_description_p').text();
+    let cover_id = parent.find('.step_cover_id').val();
+    let video_id = parent.find('.step_video_id').val();
+
+    $('#update_step_description').val(description).change();
+    $('#update_step_cover_id').val(cover_id).change();
+    $('#update_step_video_id').val(video_id).change();
+
+    update_dropzone('cover', cover_id);
+    update_dropzone('video', video_id);
+});

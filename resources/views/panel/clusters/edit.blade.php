@@ -72,9 +72,9 @@
                                         <input name="type" value="cluster_cover" hidden />
                                         <input name="content_id" value="{{$content->id}}" hidden />
                                         <div class="dz-message" data-dz-message>
-                                            <h5 class="m-dropzone__msg-title">
+                                            <p class="m-dropzone__msg-title">
                                                 فایل خود را انتخاب کنید یا در این کادر رها کنید.
-                                            </h5>
+                                            </p>
                                             <span class="m-dropzone__msg-desc">امکان اپلود 1 تصویر</span>
                                         </div>
                                     </form>
@@ -111,24 +111,31 @@
                                 <div class="col-6 p-0">
 
                                     {!! Form::open(['method' => 'DELETE','route' => ['panel.contents.clusters.steps.destroy', [$content->id, $cluster->id, $step->id]], 'onsubmit' => 'return confirm("با حدف این مرحله، تمام فایل ها و رکورد های ثبت شده توسط مراجعه کنندگان حذف خواهند شد. برای این کار مطمئن هستید؟")']) !!}
-                                    <button type="submit" class="btn btn-sm btn-outline-primary float-right" title="حذف"><span class="mdi mdi-trash-can"></span></button>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary float-right" title="حذف"><span class="mdi mdi-18px mdi-trash-can"></span></button>
                                     {!! Form::close() !!}
 
-                                    {!! Form::model($step, ['method' => 'PATCH','route' => ['panel.contents.clusters.steps.update', [$content->id, $cluster->id, $step->id]], 'class' => ['update_step']]) !!}
-                                        {!! Form::textarea('description', null, ['hidden' => 'hidden', 'class' => ['description']]) !!}
-                                        {!! Form::text('cover_id', null, ['hidden' => 'hidden', 'class' => ['cover_id']]) !!}
-                                        {!! Form::text('video_id', null, ['hidden' => 'hidden', 'class' => ['video_id']]) !!}
-                                        <button type="submit" class="btn btn-sm btn-outline-primary float-right" title="ویرایش"><span class="mdi mdi-square-edit-outline"></span></button>
-                                    {!! Form::close() !!}
+                                    <button type="button" class="btn btn-sm btn-outline-primary float-right update_step" title="ویرایش"
+                                            data-toggle="modal" data-target="#update_step_modal"
+                                            step_number="{{$step->number}}"
+                                            route="{{route('panel.contents.clusters.steps.update', [$content->id, $cluster->id, $step->id])}}">
+
+                                        <span class="mdi mdi-18px mdi-square-edit-outline"></span>
+                                    </button>
                                 </div>
                             </div>
 
                             <div class="col-12 row justify-content-center align-self-center mb-2">
-                                <textarea class="form-control col-12 description_for_edit">{{$step->description}}</textarea>
-                            </div>
+                                <p class="col-12 step_description_p">{{$step->description}}</p>
 
-                            <div class="col-12 row justify-content-center align-self-center mb-2">
+                                <div class="col-6 justify-content-center pt-4">
+                                    <input class="step_cover_id" value="{{$step->cover_id}}" hidden>
+                                    <img src="{{$step->cover_image}}" width="100%" style="max-height: 300px; width: auto">
+                                </div>
 
+                                <div class="col-6 justify-content-center pt-4">
+                                    <input class="step_video_id" value="{{$step->video_id}}" hidden>
+                                    <video src="{{$step->video_file}}" width="100%" style="max-height: 300px; width: auto"></video>
+                                </div>
                             </div>
                         </div>
                     @endforeach
@@ -161,9 +168,9 @@
                                     <input name="content_id" value="{{$content->id}}" hidden />
                                     <input name="cluster_id" value="{{$cluster->id}}" hidden />
                                     <div class="dz-message" data-dz-message>
-                                        <h5 class="m-dropzone__msg-title">
+                                        <p class="m-dropzone__msg-title">
                                             فایل<b class="text-primary"> تصویر کاور </b> خود را انتخاب کنید یا در این کادر رها کنید.
-                                        </h5>
+                                        </p>
                                         <span class="m-dropzone__msg-desc">امکان اپلود 1 تصویر</span>
                                     </div>
                                 </form>
@@ -176,9 +183,9 @@
                                     <input name="content_id" value="{{$content->id}}" hidden />
                                     <input name="cluster_id" value="{{$cluster->id}}" hidden />
                                     <div class="dz-message" data-dz-message>
-                                        <h5 class="m-dropzone__msg-title">
+                                        <p class="m-dropzone__msg-title">
                                             فایل<b class="text-primary"> ویدیو </b> خود را انتخاب کنید یا در این کادر رها کنید.
-                                        </h5>
+                                        </p>
                                         <span class="m-dropzone__msg-desc">امکان اپلود 1 ویدیو</span>
                                     </div>
                                 </form>
@@ -205,8 +212,76 @@
     <script src="{{asset('js/custom_js/dropzone_upload_file.js')}}"></script>
     <script src="{{asset('js/custom_js/steps.js')}}"></script>
 
+    <div class="modal fade" id="update_step_modal" tabindex="-1" role="dialog" aria-labelledby="update_step_modal" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ویرایش مرحله <b id="edited_step_number"></b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="col-12 row justify-content-center align-self-center">
+                        <form action="" method="POST" id="update_step_form">
+                            @method('PATCH')
+                            @csrf
+
+                            <textarea name="description" id="update_step_description" class="form-control"></textarea>
+                            <input name="cover_id" id="update_step_cover_id" hidden>
+                            <input name="video_id" id="update_step_video_id" hidden>
+
+                        </form>
+                    </div>
+
+                    <div class="col-12 row justify-content-center align-self-center mb-2">
+
+                        <div class="col-6" id="update_step_cover_div">
+                            <form action="{{url('panel/upload')}}" method="POST" class="dropzone" id="update_step_cover_form">
+                                @csrf
+                                <input name="type" value="step_cover" hidden />
+                                <input name="content_id" value="{{$content->id}}" hidden />
+                                <input name="cluster_id" value="{{$cluster->id}}" hidden />
+                                <div class="dz-message" data-dz-message>
+                                    <p class="m-dropzone__msg-title">
+                                        فایل<b class="text-primary"> تصویر کاور </b> خود را انتخاب کنید یا در این کادر رها کنید.
+                                    </p>
+                                    <span class="m-dropzone__msg-desc">امکان اپلود 1 تصویر</span>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-6" id="update_step_video_div">
+                            <form action="{{url('panel/upload')}}" method="POST" class="dropzone" id="update_step_video_form">
+                                @csrf
+                                <input name="type" value="step_video" hidden />
+                                <input name="content_id" value="{{$content->id}}" hidden />
+                                <input name="cluster_id" value="{{$cluster->id}}" hidden />
+                                <div class="dz-message" data-dz-message>
+                                    <p class="m-dropzone__msg-title">
+                                        فایل<b class="text-primary"> ویدیو </b> خود را انتخاب کنید یا در این کادر رها کنید.
+                                    </p>
+                                    <span class="m-dropzone__msg-desc">امکان اپلود 1 ویدیو</span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="ladda-button btn btn-primary mb-2 btn-pill" id="step_update_button">
+                            <span class="ladda-label">ویرایش</span>
+                            <span class="ladda-spinner"></span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
-        //description_for_edit
         $(document).ready(function() {
             $('#submit_button').on('click', function () {
                 $('#cluster_update_form').submit();
@@ -216,19 +291,8 @@
                 $('#new_step_form').submit();
             });
 
-            $('.update_step').on('submit', function() {
-                var form_description = $(this).find('.description');
-                var form_cover_id = $(this).find('.cover_id');
-                var form_video_id = $(this).find('.video_id');
-
-                var parent = $(this).parent().parent().parent();
-                var description = parent.find('.description_for_edit').val();
-
-                form_description.val(description);
-                form_cover_id.val(1);
-                form_video_id.val(1);
-
-                return true;
+            $('#step_update_button').on('click', function () {
+                $('#update_step_form').submit();
             });
         });
     </script>
