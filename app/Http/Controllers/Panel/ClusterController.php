@@ -8,7 +8,10 @@ use App\Models\Cluster;
 use App\Models\Content;
 use App\Models\File;
 use App\Models\Step;
+use Exception;
+use Illuminate\Filesystem\Filesystem as FileSystem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class ClusterController extends Controller
@@ -64,22 +67,42 @@ class ClusterController extends Controller
     }
 
     public function destroy(Content $content, Cluster $cluster){
-        $steps_id_list = $cluster->steps()->pluck('id')->toArray();
+        try{
+            DB::beginTransaction();
 
-        //deleting actions
-        Action::whereIn('step_id', $steps_id_list)
-            ->delete();
+            $steps_id_list = $cluster->steps()->pluck('id')->toArray();
 
-        //deleting contents user
-        $content->users()->wherePivot('cluster_id', $cluster->id)->sync([]);
+            //deleting actions
+            Action::whereIn('step_id', $steps_id_list)
+                ->delete();
 
-        //deleting steps
-        Step::whereIn('id', $steps_id_list)->delete();
+            //deleting contents user
+            $content->users()->wherePivot('cluster_id', $cluster->id)->sync([]);
 
-        //deleting cluster
-        $cluster->delete();
+            //deleting steps
+            $steps = Step::whereIn('id', $steps_id_list)->get();
+            foreach ($steps as $step){
+                $step->cover()->delete();
+                $step->video()->delete();
+            }
+            Step::whereIn('id', $steps_id_list)->delete();
 
-        return redirect()->back()
-            ->with('success', 'محتوا و تمام فایل ها و رکورد های مربوط به این محتوا حذف شد.');
+            //deleting directory of cluster
+            $id = $cluster->id;
+            $content_id = $cluster->content_id;
+            (new FileSystem)->deleteDirectory(public_path('contents/'.$content_id.'/'.$id));
+
+            //deleting cluster
+            $cluster->delete();
+
+            DB::commit();
+
+            return redirect()->back()
+                ->with('success', 'محتوا و تمام فایل ها و رکورد های مربوط به این محتوا حذف شد.');
+        }catch (Exception $exception){
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'عملیات حذف با مشکل مواجه شده است.');
+        }
     }
 }

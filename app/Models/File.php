@@ -19,6 +19,49 @@ class File extends Model
     protected $table = 'files';
     protected $primaryKey = 'id';
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($model) {
+            $path = $model->file_path;
+
+            if (file_exists($path)){
+                unlink($path);
+            }
+
+//            if ($upload->user){
+//                $user = $upload->user()->first();
+//                $user->avatar_id = null;
+//                $user->save();
+//            }
+
+            if ($model->content){
+                $content = $model->content()->first();
+                $content->cover_id = null;
+                $content->save();
+            }
+
+            if ($model->cluster){
+                $cluster = $model->cluster()->first();
+                $cluster->cover_id = null;
+                $cluster->save();
+            }
+
+            if ($model->step_cover){
+                $step_cover = $model->step_cover()->first();
+                $step_cover->cover_id = null;
+                $step_cover->save();
+            }
+
+            if ($model->step_video){
+                $step_video = $model->step_video()->first();
+                $step_video->video_id = null;
+                $step_video->save();
+            }
+        });
+    }
+
     protected $fillable = [
         'file_path'
     ];

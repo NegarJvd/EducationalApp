@@ -122,42 +122,6 @@ class UploadController extends Controller
         $upload = File::find($upload_id);
 
         try {
-            $path = $upload->file_path;
-
-            if (file_exists($path)){
-                unlink($path);
-            }
-
-//            if ($upload->user){
-//                $user = $upload->user()->first();
-//                $user->avatar_id = null;
-//                $user->save();
-//            }
-
-            if ($upload->content){
-                $content = $upload->content()->first();
-                $content->cover_id = null;
-                $content->save();
-            }
-
-            if ($upload->cluster){
-                $cluster = $upload->cluster()->first();
-                $cluster->cover_id = null;
-                $cluster->save();
-            }
-
-            if ($upload->step_cover){
-                $step_cover = $upload->step_cover()->first();
-                $step_cover->cover_id = null;
-                $step_cover->save();
-            }
-
-            if ($upload->step_video){
-                $step_video = $upload->step_video()->first();
-                $step_video->video_id = null;
-                $step_video->save();
-            }
-
             $upload->delete();
 
             return $this->customSuccess(1, "فایل با موفقیت حذف شد.");

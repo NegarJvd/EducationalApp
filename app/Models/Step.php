@@ -21,9 +21,21 @@ class Step extends Model
     {
         parent::boot();
 
-        // deleting files of steps
-        self::deleted(function ($model) {
-            //delete files
+        // deleting files
+        static::deleting(function ($model) {
+            $step_cover = $model->cover_id;
+            $cover_file = File::withTrashed()->find($step_cover);
+            if (file_exists($cover_file->file_path)){
+                unlink($cover_file->file_path);
+            }
+            $cover_file->delete();
+
+            $step_video = $model->video_id;
+            $video_file = File::withTrashed()->find($step_video);
+            if (file_exists($video_file->file_path)){
+                unlink($video_file->file_path);
+            }
+            $video_file->delete();
         });
     }
 
@@ -36,13 +48,15 @@ class Step extends Model
     ];
 
     function getCoverImageAttribute() {
-        if(array_key_exists('cover_id', $this->attributes) and !is_null($this->attributes['cover_id']) and file_exists($this->cover->file_path))
+        if(array_key_exists('cover_id', $this->attributes) and !is_null($this->attributes['cover_id'])
+            and $this->cover and file_exists($this->cover->file_path))
             return asset($this->cover->file_path);
         return asset('/assets/img/cc1b.jpg');
     }
 
     function getVideoFileAttribute() {
-        if(array_key_exists('video_id', $this->attributes) and !is_null($this->attributes['video_id']) and file_exists($this->video->file_path))
+        if(array_key_exists('video_id', $this->attributes) and !is_null($this->attributes['video_id'])
+            and $this->video and file_exists($this->video->file_path))
             return asset($this->video->file_path);
         return asset('/assets/img/cd_5.mp4');
     }

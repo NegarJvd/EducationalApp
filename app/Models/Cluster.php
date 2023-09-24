@@ -24,12 +24,13 @@ class Cluster extends Model
         parent::boot();
 
         // deleting files
-        self::deleted(function ($model) {
+        static::deleting(function ($model) {
             $cluster_cover = $model->cover_id;
             $file = File::withTrashed()->find($cluster_cover);
             if (file_exists($file->file_path)){
                 unlink($file->file_path);
             }
+            $file->delete();
         });
     }
 
@@ -43,7 +44,8 @@ class Cluster extends Model
     ];
 
     function getCoverImageAttribute() {
-        if(array_key_exists('cover_id', $this->attributes) and !is_null($this->attributes['cover_id']) and file_exists($this->cover->file_path))
+        if(array_key_exists('cover_id', $this->attributes) and !is_null($this->attributes['cover_id'])
+            and $this->cover and file_exists($this->cover->file_path))
             return asset($this->cover->file_path);
         return asset('/assets/img/cc1b.jpg');
     }

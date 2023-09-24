@@ -26,6 +26,7 @@ Dropzone.options.indexPictureDropzone = {
                     myDropzone.emit("addedfile", mockFile);
                     myDropzone.emit("thumbnail", mockFile, response.data.file_path);
                     myDropzone.emit("complete", mockFile);
+                    myDropzone.files.push( mockFile );
                     myDropzone.options.maxFiles = 0;
 
                     $('[data-dz-thumbnail]').css('height', '120');
@@ -46,13 +47,14 @@ Dropzone.options.indexPictureDropzone = {
                 dataType: 'json',
                 success: function (data, textStatus, jQxhr) {
                     $('#file_id').val('').change();
+                    myDropzone.options.maxFiles = 1;
 
                     response = JSON.parse(jQxhr.responseText);
-                    console.log(response.message);
+                    swal("موفقیت آمیز", response.message, "success");
                 },
                 error: function (jqXhr, textStatus, errorThrown) {
                     response = JSON.parse(jqXhr.responseText);
-                    console.log(response.message);
+                    swal("خطا!", response.message, "error");
                 },
                 headers: {
                     'Accept': 'application/json',

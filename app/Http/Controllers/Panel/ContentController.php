@@ -8,7 +8,10 @@ use App\Models\Cluster;
 use App\Models\Content;
 use App\Models\File;
 use App\Models\Step;
+use Exception;
+use Illuminate\Filesystem\Filesystem as FileSystem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class ContentController extends Controller
@@ -84,26 +87,49 @@ class ContentController extends Controller
     }
 
     public function destroy(Content $content){
-        $clusters_id_list = $content->clusters()->pluck('id')->toArray();
-        $steps_id_list = Step::whereIn('cluster_id', $clusters_id_list)->pluck('id')->toArray();
+        try {
+            DB::beginTransaction();
+            $clusters_id_list = $content->clusters()->pluck('id')->toArray();
+            $steps_id_list = Step::whereIn('cluster_id', $clusters_id_list)->pluck('id')->toArray();
 
-        //deleting actions
-        Action::whereIn('step_id', $steps_id_list)
+            //deleting actions
+            Action::whereIn('step_id', $steps_id_list)
                 ->delete();
 
-        //deleting contents user
-        $content->users()->sync([]);
+            //deleting contents user
+            $content->users()->sync([]);
 
-        //deleting steps
-        Step::whereIn('id', $steps_id_list)->delete();
+            //deleting steps
+            $steps = Step::whereIn('id', $steps_id_list)->get();
+            foreach ($steps as $step) {
+                $step->cover()->delete();
+                $step->video()->delete();
+            }
+            Step::whereIn('id', $steps_id_list)->delete();
 
-        //deleting clusters
-        Cluster::whereIn('id', $clusters_id_list)->delete();
+            //deleting clusters
+            $clusters = Cluster::whereIn('id', $clusters_id_list)->get();
+            foreach ($clusters as $cluster) {
+                $cluster->cover()->delete();
+            }
+            Cluster::whereIn('id', $clusters_id_list)->delete();
 
-        //delete content
-        $content->delete();
+            //deleting files
+            $id = $content->id;
+            (new FileSystem)->deleteDirectory(public_path('contents/' . $id));
 
-        return redirect()->back()
+            //delete content
+            $content->delete();
+
+            DB::commit();
+
+            return redirect()->back()
                 ->with('success', 'محتوا و تمام فایل ها و رکورد های مربوط به این محتوا حذف شد.');
+
+        }catch (Exception $exception){
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'عملیات حذف با مشکل مواجه شده است.');
+        }
     }
 }
