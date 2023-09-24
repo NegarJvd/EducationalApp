@@ -86,3 +86,9 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//Route::get('/clean', function (){
+//    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+//    \Illuminate\Support\Facades\Artisan::call('config:clear');
+//    return \Illuminate\Support\Facades\Artisan::call('config:cache');
+//});
