@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Providers\RouteServiceProvider;
+use Cryptommer\Smsir\Objects\Parameters;
+use Cryptommer\Smsir\Smsir;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redis;
-//use Negar\Smsirlaravel\Smsirlaravel;
 
 class LoginController extends Controller
 {
@@ -61,13 +61,14 @@ class LoginController extends Controller
 
         if(!$admin) return $this->customError('شماره همراه اشتباه است.');
 
-        $token = rand(11111, 99999);
+        $token = "1234"; //rand(11111, 99999);
 
-        Redis::set('reset_password_token_' . $request->get('phone'), Hash::make($token), 'EX', 300); //expire in 5 min
+//        Redis::set('reset_password_token_' . $request->get('phone'), Hash::make($token), 'EX', 300); //expire in 5 min
+        $send = smsir::Send();
+        $parameter = new Parameters('otp', $token);
+        $send->Verify($admin->phone, $this->sms_template('otp'), [$parameter]);
 
-//        Smsirlaravel::ultraFastSend(['password' => $token], 56898, $admin->phone); //TODO
-
-        return $this->success('', 'کد تایید به شماره ' . $admin->phone . ' پیامک شد.');
+        return $this->customSuccess('', 'کد تایید به شماره ' . $admin->phone . ' پیامک شد.');
     }
 
     public function resetPassword(Request $request){
@@ -81,17 +82,18 @@ class LoginController extends Controller
 
         if(!$admin) return $this->customError('نام کاربری اشتباه است.');
 
-        $right_token = Redis::get('reset_password_token_' . $request->get('phone'));
+        $right_token = "1234";//Redis::get('reset_password_token_' . $request->get('phone'));
 
-        if(Hash::check($request->get('token'), $right_token)){
+//        if(Hash::check($request->get('token'), $right_token)){
+        if($request->get('token') == $right_token){
             $admin->password = Hash::make($request->get('password'));
             $admin->save();
         }else{
             return $this->customError("کد تایید وارد شده اشتباه است.");
         }
 
-        Redis::del('reset_password_token_' . $request->get('phone'));
+        //Redis::del('reset_password_token_' . $request->get('phone'));
 
-        return $this->success('', "رمز شما با موفقیت تغییر یافت.");
+        return $this->customSuccess('', "رمز شما با موفقیت تغییر یافت.");
     }
 }

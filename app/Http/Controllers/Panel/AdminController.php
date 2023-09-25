@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use Cryptommer\Smsir\Objects\Parameters;
+use Cryptommer\Smsir\Smsir;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-//use Negar\Smsirlaravel\Smsirlaravel;
 use Spatie\Permission\Models\Role;
 use App\Models\admin;
 use Exception;
@@ -94,7 +95,9 @@ class AdminController extends Controller
                 $admin->assignRole([$role]);
             }
 
-//        Smsirlaravel::ultraFastSend(['password' => $pass], 56161, $admin->phone);
+            $send = smsir::Send();
+            $parameter = new Parameters('password', $pass);
+            $send->Verify($admin->phone, $this->sms_template('password'), [$parameter]);
 
             DB::commit();
         }catch (Exception $exception){
