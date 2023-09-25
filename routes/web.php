@@ -90,5 +90,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 //Route::get('/clean', function (){
 //    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
 //    \Illuminate\Support\Facades\Artisan::call('config:clear');
-//    return \Illuminate\Support\Facades\Artisan::call('config:cache');
+//    \Illuminate\Support\Facades\Artisan::call('config:cache');
+//    \Illuminate\Support\Facades\Artisan::call('route:clear');
+//    \Illuminate\Support\Facades\Artisan::call('route:cache');
+//
+//    return "OK Negar!";
 //});

@@ -82,7 +82,7 @@ $(document).ready(function() {
         let text = $('#text').val();
 
         $.ajax({
-            url: '/panel/tickets/',
+            url: '/panel/tickets',
             type: 'POST',
             datatype: 'json',
             data: {
