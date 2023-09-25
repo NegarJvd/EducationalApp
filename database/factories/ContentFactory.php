@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +18,7 @@ class ContentFactory extends Factory
     {
         return [
             'name' => fake()->unique()->word(),
-            'cover_id' => File::query()->inRandomOrder()->first()->id
+            'cover_id' => null //File::query()->inRandomOrder()->first()->id
         ];
     }
 }

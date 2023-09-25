@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,8 +18,8 @@ class StepFactory extends Factory
     {
         return [
             'description' => fake()->paragraph(3),
-            'cover_id' => File::query()->inRandomOrder()->first()->id,
-            'video_id' => File::query()->inRandomOrder()->first()->id
+            'cover_id' => null, //File::query()->inRandomOrder()->first()->id,
+            'video_id' => null //File::query()->inRandomOrder()->first()->id
         ];
     }
 }

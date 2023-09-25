@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(PermissionsSeeder::class);
-        $this->call(FileSeeder::class);
+        //$this->call(FileSeeder::class);
         $this->call(ContentSeeder::class);
         $this->call(ClusterSeeder::class);
         $this->call(StepSeeder::class);

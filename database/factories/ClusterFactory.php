@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Content;
-use App\Models\File;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,7 +21,7 @@ class ClusterFactory extends Factory
             'content_id' => Content::query()->inRandomOrder()->first()->id,
             'name' => fake()->title(),
             'description' => fake()->paragraph(3),
-            'cover_id' => File::query()->inRandomOrder()->first()->id
+            'cover_id' => null //File::query()->inRandomOrder()->first()->id
         ];
     }
 }
