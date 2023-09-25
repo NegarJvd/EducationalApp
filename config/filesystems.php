@@ -56,6 +56,10 @@ return [
             'throw' => false,
         ],
 
+        'public_uploads' => [
+            'driver' => 'local',
+            'root'   => '/home/autismap/public_html',
+        ],
     ],
 
     /*
