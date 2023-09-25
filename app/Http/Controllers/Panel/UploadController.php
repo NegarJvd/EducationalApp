@@ -31,7 +31,7 @@ class UploadController extends Controller
                 $file      = $validation['file']; // get the validated file
                 $extension = $file->getClientOriginalExtension();
                 $filename  = 'profile-photo-' . time() . '.' . $extension;
-                $path      = $file->storeAs('avatars', $filename);
+                $path      = $file->storePubliclyAs('avatars', $filename);
 
                 $upload = File::create([
                     'file_path' => $path
@@ -51,7 +51,7 @@ class UploadController extends Controller
                 $file      = $validation['file']; // get the validated file
                 $extension = $file->getClientOriginalExtension();
                 $filename  = 'content-cover-' . time() . '.' . $extension;
-                $path      = $file->storeAs('contents/content_covers', $filename);
+                $path      = $file->storePubliclyAs('contents/content_covers', $filename);
 
                 $file = File::create([
                     'file_path' => $path,
@@ -68,7 +68,7 @@ class UploadController extends Controller
                 $file      = $validation['file']; // get the validated file
                 $extension = $file->getClientOriginalExtension();
                 $filename  = 'cluster-cover-' . time() . '.' . $extension;
-                $path      = $file->storeAs('contents/' . $request->get('content_id'), $filename);
+                $path      = $file->storePubliclyAs('contents/' . $request->get('content_id'), $filename);
 
                 $file = File::create([
                     'file_path' => $path,
@@ -86,7 +86,7 @@ class UploadController extends Controller
                 $file      = $validation['file']; // get the validated file
                 $extension = $file->getClientOriginalExtension();
                 $filename  = 'step-cover-' . time() . '.' . $extension;
-                $path      = $file->storeAs('contents/' . $request->get('content_id') . '/' . $request->get('cluster_id'), $filename);
+                $path      = $file->storePubliclyAs('contents/' . $request->get('content_id') . '/' . $request->get('cluster_id'), $filename);
 
                 $file = File::create([
                     'file_path' => $path,
@@ -104,7 +104,7 @@ class UploadController extends Controller
                 $file      = $validation['file']; // get the validated file
                 $extension = $file->getClientOriginalExtension();
                 $filename  = 'step-video-' . time() . '.' . $extension;
-                $path      = $file->storeAs('contents/' . $request->get('content_id') . '/' . $request->get('cluster_id'), $filename);
+                $path      = $file->storePubliclyAs('contents/' . $request->get('content_id') . '/' . $request->get('cluster_id'), $filename);
 
                 $file = File::create([
                     'file_path' => $path,
