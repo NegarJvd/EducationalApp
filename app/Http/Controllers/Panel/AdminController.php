@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\File;
 use Cryptommer\Smsir\Objects\Parameters;
 use Cryptommer\Smsir\Smsir;
 use Illuminate\Support\Facades\DB;
@@ -69,6 +70,7 @@ class AdminController extends Controller
             'phone' => ['required', 'numeric','digits:11','regex:/^(09)/', 'unique:admins,phone'],
             'email'=> ['nullable', 'string', 'email', 'max:255', 'unique:admins,email'],
             'medical_system_number' => ['required', 'unique:admins,medical_system_number'],
+            'medical_system_card_id' => ['required', Rule::in(File::pluck('id'))],
             'birth_date' => ['nullable'],
             'gender' => ['nullable', Rule::in(Admin::gender())],
             'address' => ['nullable', 'string', 'max:255'],
@@ -79,7 +81,8 @@ class AdminController extends Controller
             'role' => ['nullable', Rule::in(Role::pluck('name'))]
         ]);
 
-        $input = $request->all();
+        $input = $request->only('first_name', 'last_name', 'phone', 'email', 'medical_system_number', 'medical_system_card_id', 'gender',
+                                    'address', 'landline_phone', 'field_of_profession', 'resume', 'degree_of_education');
         $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date'), "Y-m-d") : null;
         $input['status'] = Admin::status()[1];
 
@@ -132,6 +135,7 @@ class AdminController extends Controller
             'phone' => ['nullable', 'numeric','digits:11','regex:/^(09)/', 'unique:admins,phone,'.$id],
             'email'=> ['nullable', 'string', 'email', 'max:255', 'unique:admins,email,'.$id],
             'medical_system_number' => ['nullable', 'unique:admins,medical_system_number,' .$id],
+            'medical_system_card_id' => ['nullable', Rule::in(File::pluck('id'))],
             'birth_date' => ['nullable'],
             'gender' => ['nullable', Rule::in(Admin::gender())],
             'address' => ['nullable', 'string', 'max:255'],
@@ -145,7 +149,8 @@ class AdminController extends Controller
         $admin = Admin::find($id);
         $admin_array = $admin->toArray();
 
-        $input = $request->all();
+        $input = $request->only('first_name', 'last_name', 'phone', 'email', 'medical_system_number', 'medical_system_card_id', 'gender',
+            'address', 'landline_phone', 'field_of_profession', 'resume', 'degree_of_education');
         $input['birth_date'] = !is_null($request->get('birth_date')) ? timestamp_to_date($request->get('birth_date')) : $admin->birth_date;
 
         $input = array_merge($admin_array, $input);
@@ -155,6 +160,7 @@ class AdminController extends Controller
             'last_name' => ['required'],
             'phone' => ['required'],
             'medical_system_number' => ['required'],
+            'medical_system_card_id' => ['required'],
         ]);
 
         if ($validation->fails()) {

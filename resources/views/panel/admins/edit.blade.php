@@ -223,7 +223,27 @@
 
                             @include('panel.panel_message')
 
-                            {!! Form::model($admin, ['method' => 'PATCH','route' => ['panel.admins.update', $admin->id]]) !!}
+                            <div class="form-group row">
+                                <div class="col-12 col-md-2 text-left">
+                                    <label for="index_picture_dropzone">کارت نظام پزشکی<b class="text-primary">*</b></label>
+                                </div>
+
+                                <div class="col-12 col-md-7">
+
+                                    <form action="{{url('panel/upload')}}" method="POST" class="dropzone" id="index_picture_dropzone">
+                                        @csrf
+                                        <input name="type" value="medical_system_card" hidden />
+                                        <div class="dz-message" data-dz-message>
+                                            <p class="m-dropzone__msg-title">
+                                                فایل خود را انتخاب کنید یا در این کادر رها کنید.
+                                            </p>
+                                            <span class="m-dropzone__msg-desc">امکان اپلود 1 تصویر</span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            {!! Form::model($admin, ['method' => 'PATCH','route' => ['panel.admins.update', $admin->id], 'id' => 'admin_update_form']) !!}
 
                             <div class="form-group row">
                                 <div class="col-12 col-md-2 text-left">
@@ -232,6 +252,7 @@
 
                                 <div class="col-12 col-md-7">
                                     {!! Form::text('medical_system_number', null, array('class' => 'form-control', 'id'=>'medical_system_number')) !!}
+                                    {!! Form::text('medical_system_card_id', null, array('class' => 'form-control', 'id'=>'file_id', 'hidden' => 'hidden')) !!}
                                 </div>
 
                             </div>
@@ -282,7 +303,6 @@
                             </div>
 
                             {!! Form::close() !!}
-
 
                         </div>
                     </div>
@@ -345,6 +365,8 @@
 @section('scripts')
     <script src="{{asset('js/persian-date.min.js')}}"></script>
     <script src="{{asset('js/persian-datepicker.min.js')}}"></script>
+    <script src="{{asset('js/dropzone.min.js')}}"></script>
+    <script src="{{asset('js/custom_js/dropzone_upload_file.js')}}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {

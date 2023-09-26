@@ -97,6 +97,7 @@ return [
         public_path('storage') => storage_path('app/public'),
         public_path('avatars') => storage_path('app/avatars'),
         public_path('contents') => storage_path('app/contents'),
+        public_path('medical_system_cards') => storage_path('app/medical_system_cards'),
     ],
 
 ];

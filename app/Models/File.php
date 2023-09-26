@@ -59,6 +59,12 @@ class File extends Model
                 $step_video->video_id = null;
                 $step_video->save();
             }
+
+            if ($model->medical_system_card){
+                $admin = $model->medical_system_card()->first();
+                $admin->medical_system_card_id = null;
+                $admin->save();
+            }
         });
     }
 
@@ -101,5 +107,9 @@ class File extends Model
 
     public function step_video(){
         return $this->hasOne(Step::class, "video_id");
+    }
+
+    public function medical_system_card(){
+        return $this->hasOne(Admin::class, "medical_system_card_id");
     }
 }

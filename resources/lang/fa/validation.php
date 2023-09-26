@@ -222,6 +222,8 @@ return [
         "fa_name" => "نام فارسی",
         "transaction_plan_for_register" => "مدت زمان اشتراک رایگان در زمان ثبت نام",
         "explanation_of_cancellation" => "علت لغو سفارش",
+        "medical_system_number" => "َشماره نظام پزشکی",
+        "medical_system_card_id" => "کارت نظام پزشکی",
     ],
 
 ];

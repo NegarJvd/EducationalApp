@@ -2,6 +2,7 @@
 
 @section('head_styles')
     <link href='{{asset('css/persian-datepicker.min.css')}}' rel='stylesheet'>
+    <link href='{{asset('css/dropzone.min.css')}}' rel='stylesheet'>
 @endsection
 
 @section('content')
@@ -70,7 +71,7 @@
 
                                 @include('panel.panel_message')
 
-                                {!! Form::open(array('route' => 'panel.admins.store', 'method'=>'POST')) !!}
+                                {!! Form::open(array('route' => 'panel.admins.store', 'method'=>'POST', 'id' => 'admin_create_form')) !!}
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
@@ -169,6 +170,7 @@
 
                                     <div class="col-12 col-md-7">
                                         {!! Form::text('medical_system_number', null, array('class' => 'form-control', 'id'=>'medical_system_number', 'required' => 'required')) !!}
+                                        {!! Form::text('medical_system_card_id', null, array('class' => 'form-control', 'id'=>'file_id', 'required' => 'required', 'hidden' => 'hidden')) !!}
                                     </div>
 
                                 </div>
@@ -228,14 +230,35 @@
                                 </div>
                                 @endcan
 
+                                {!! Form::close() !!}
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
+                                        <label for="index_picture_dropzone">کارت نظام پزشکی<b class="text-primary">*</b></label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+
+                                        <form action="{{url('panel/upload')}}" method="POST" class="dropzone" id="index_picture_dropzone">
+                                            @csrf
+                                            <input name="type" value="medical_system_card" hidden />
+                                            <div class="dz-message" data-dz-message>
+                                                <p class="m-dropzone__msg-title">
+                                                    فایل خود را انتخاب کنید یا در این کادر رها کنید.
+                                                </p>
+                                                <span class="m-dropzone__msg-desc">امکان اپلود 1 تصویر</span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
                                 <div class="d-flex justify-content-center mt-5">
-                                    <button type="submit" class="ladda-button btn btn-primary mb-2 btn-pill">
+                                    <button type="button" class="ladda-button btn btn-primary mb-2 btn-pill" id="submit_button">
                                         <span class="ladda-label">ذخیره</span>
                                         <span class="ladda-spinner"></span>
                                     </button>
                                 </div>
 
-                                {!! Form::close() !!}
                             </div>
                         </div>
                     </div>
@@ -249,6 +272,8 @@
 @section('scripts')
     <script src="{{asset('js/persian-date.min.js')}}"></script>
     <script src="{{asset('js/persian-datepicker.min.js')}}"></script>
+    <script src="{{asset('js/dropzone.min.js')}}"></script>
+    <script src="{{asset('js/custom_js/dropzone_upload_file.js')}}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -269,6 +294,10 @@
                     altField: '#alt_birth_date',
                 });
             }
+
+            $('#submit_button').on('click', function () {
+                $('#admin_create_form').submit();
+            });
         });
     </script>
 @endsection

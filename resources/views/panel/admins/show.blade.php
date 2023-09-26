@@ -198,6 +198,17 @@
 
                                 <div class="form-group row">
                                     <div class="col-12 col-md-2 text-left">
+                                        <label for="medical_system_card">کارت نظام پزشکی</label>
+                                    </div>
+
+                                    <div class="col-12 col-md-7">
+                                        <img src="{{$admin->medical_system_card_file}}" style="max-height: 300px; width: auto;">
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-12 col-md-2 text-left">
                                         <label for="medical_system_number">کد نظام پزشکی</label>
                                     </div>
 

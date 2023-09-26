@@ -17,7 +17,7 @@ class UploadController extends Controller
     public function upload_file(Request $request){
         $request->validate([
             'file' => 'file|required',
-            'type' => 'required|in:avatar,content_cover,cluster_cover,step_cover,step_video'
+            'type' => 'required|in:avatar,content_cover,cluster_cover,step_cover,step_video,medical_system_card'
         ]);
 
         $type =  $request->get('type');
@@ -33,15 +33,31 @@ class UploadController extends Controller
                 $filename  = 'profile-photo-' . time() . '.' . $extension;
                 $path      = $file->storePubliclyAs('avatars', $filename);
 
-                $upload = File::create([
+                $file = File::create([
                     'file_path' => $path
                 ]);
 
                 $user = Auth::user();
-                $user->avatar_id = $upload->id;
+                $user->avatar_id = $file->id;
                 $user->save();
 
-                return $this->customSuccess($upload->id, "فایل پروفایل با موفقیت آپلود شد.");
+                return $this->customSuccess(ContentUploadResource::make($file), "فایل پروفایل با موفقیت آپلود شد.");
+
+            case "medical_system_card":
+                $validation = $request->validate([
+                    'file' => 'file|required|image',
+                ]);
+
+                $file      = $validation['file']; // get the validated file
+                $extension = $file->getClientOriginalExtension();
+                $filename  = 'medical_system_card-' . time() . '.' . $extension;
+                $path      = $file->storePubliclyAs('medical_system_cards', $filename);
+
+                $file = File::create([
+                    'file_path' => $path
+                ]);
+
+                return $this->customSuccess(ContentUploadResource::make($file), "فایل کارت نظام پزشکی با موفقیت آپلود شد.");
 
             case "content_cover":
                 $validation = $request->validate([
