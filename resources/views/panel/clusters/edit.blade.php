@@ -216,7 +216,7 @@
     <script src="{{asset('js/custom_js/steps.js')}}"></script>
 
     <div class="modal fade" id="update_step_modal" tabindex="-1" role="dialog" aria-labelledby="update_step_modal" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">ویرایش مرحله <b id="edited_step_number"></b></h5>
@@ -226,12 +226,12 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="col-12 row justify-content-center align-self-center">
-                        <form action="" method="POST" id="update_step_form">
+                    <div class="col-12 row justify-content-center align-self-center mb-2">
+                        <form action="" method="POST" id="update_step_form" class="col-12 row">
                             @method('PATCH')
                             @csrf
 
-                            <textarea name="description" id="update_step_description" class="form-control"></textarea>
+                            <textarea name="description" id="update_step_description" class="form-control col-12"></textarea>
                             <input name="cover_id" id="update_step_cover_id" hidden>
                             <input name="video_id" id="update_step_video_id" hidden>
 
