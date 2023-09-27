@@ -64,11 +64,13 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
     //tickets
     Route::resource('tickets', TicketController::class)->only('index', 'show', 'store');
 
-    //charts
+    //actions
     Route::get('evaluation', [ActionController::class, 'evaluation']);
+    Route::post('submit_action', [ActionController::class, 'submit_action']);
 
     //users contents
     Route::get('get_each_contents_clusters_list/{content_id}', [UsersContentController::class, 'get_each_contents_clusters_list']);
+    Route::get('get_each_clusters_steps_list/{cluster_id}', [UsersContentController::class, 'get_each_clusters_steps_list']);
     Route::post('add_content_for_user', [UsersContentController::class, 'add_content_for_user']);
     Route::delete('delete_content_for_user', [UsersContentController::class, 'delete_content_for_user']);
 //
@@ -86,13 +88,3 @@ Route::group(['middleware' => ['auth:web'], 'prefix' => 'panel', 'as' => 'panel.
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-//Route::get('/clean', function (){
-//    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
-//    \Illuminate\Support\Facades\Artisan::call('config:clear');
-//    \Illuminate\Support\Facades\Artisan::call('config:cache');
-//    \Illuminate\Support\Facades\Artisan::call('route:clear');
-//    \Illuminate\Support\Facades\Artisan::call('route:cache');
-//
-//    return "OK Negar!";
-//});

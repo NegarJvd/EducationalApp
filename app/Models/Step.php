@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @method static pluck(string $string)
  * @method static whereIn(string $string, $steps_id_list)
+ * @method static find($get)
+ * @method static where(string $string, $cluster_id)
  */
 class Step extends Model
 {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use App\Models\Cluster;
 use App\Models\Content;
+use App\Models\Step;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,7 @@ class UsersContentController extends Controller
     function __construct()
     {
         $this->middleware('permission:content-list|add_content_for_user|delete_content_for_user');
-        $this->middleware('permission:content-list', ['only' => ['get_each_contents_clusters_list']]);
+        $this->middleware('permission:content-list', ['only' => ['get_each_contents_clusters_list', 'get_each_clusters_steps_list']]);
         $this->middleware('permission:add_content_for_user', ['only' => ['add_content_for_user']]);
         $this->middleware('permission:delete_content_for_user', ['only' => ['delete_content_for_user']]);
     }
@@ -30,6 +31,14 @@ class UsersContentController extends Controller
             ->get();
 
         return $this->customSuccess($clusters, "لیست دسته بندی های محتوا");
+    }
+
+    public function get_each_clusters_steps_list($cluster_id){
+        $steps = Step::where('cluster_id', $cluster_id)
+            ->select('id', 'number')
+            ->get();
+
+        return $this->customSuccess($steps, "لیست مراحل هر دسته بندی");
     }
 
     public function add_content_for_user(Request $request){

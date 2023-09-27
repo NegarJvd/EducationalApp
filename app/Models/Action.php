@@ -17,7 +17,7 @@ class Action extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'user_id', 'step_id', 'count', 'result'
+        'user_id', 'admin_id', 'step_id', 'count', 'result'
     ];
 
     public function user(){

@@ -3,9 +3,13 @@ $(document).ready(function() {
     $(document).on('click', '.view_actions', function () {
         let td = $(this).parent();
         let cluster_id = td.find('.cluster_id').val();
+        let content_name = td.parent().find('.content_name').text();
+        let cluster_name = td.parent().find('.cluster_name').text();
 
         //fix cluster id for filtering
         $('#cluster_id').val(cluster_id).change();
+        $('#content_name').text(content_name).change();
+        $('#cluster_name').text(cluster_name).change();
         //
 
         let user_id = $('#user_id').val();

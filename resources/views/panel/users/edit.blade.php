@@ -315,14 +315,18 @@
                                             <tbody id="contents_table_body">
                                                 @foreach($clusters as $cluster)
                                                     <tr>
-                                                        <td>{{$cluster->content->name}}</td>
-                                                        <td>{{$cluster->name}}</td>
+                                                        <td class="content_name">{{$cluster->content->name}}</td>
+                                                        <td class="cluster_name">{{$cluster->name}}</td>
                                                         <td>
                                                             @can('user-evaluation')
                                                                 <input hidden value="{{$cluster->id}}" class="cluster_id">
                                                                 <button type="button" class="btn p-0 view_actions" data-toggle="modal" data-target="#actions_charts"
                                                                         title="عملكرد">
                                                                     <span class="mdi mdi-eye-outline mdi-dark mdi-18px"></span>
+                                                                </button>
+                                                                <button type="button" class="btn p-0 submit_action" data-toggle="modal" data-target="#actions_form"
+                                                                        title="ثبت عملکرد">
+                                                                    <span class="mdi mdi-square-edit-outline mdi-dark mdi-18px"></span>
                                                                 </button>
                                                                 <button type="button" class="btn p-0 delete_content" title="حذف">
                                                                     <span class="mdi mdi-trash-can-outline mdi-dark mdi-18px"></span>
@@ -411,25 +415,25 @@
             });
         </script>
 
-
         <script src="{{asset('js/custom_js/users_contents.js')}}"></script>
+        <script src="{{asset('js/custom_js/users_actions.js')}}"></script>
         <script src='{{asset('assets/plugins/charts/Chart.min.js')}}'></script>
         <script src="{{asset('js/custom_js/actions_chart.js')}}"></script>
+
+        <input hidden value="{{$user->id}}" id="user_id">
+        <input hidden value="" id="cluster_id">
 
         <div class="modal fade" id="actions_charts" tabindex="-1" role="dialog" aria-labelledby="actions_charts" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle2">عملکرد </h5>
+                        <h5 class="modal-title">عملکرد <b id="content_name"></b> / <b id="cluster_name"></b></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
 
                     <div class="modal-body" id="popup_form">
-                        <input hidden value="{{$user->id}}" id="user_id">
-                        <input hidden value="" id="cluster_id">
-
                         <div class="row col-12">
                             <div class="col-8">
                                 <select class="form-control" id="month">
@@ -470,6 +474,59 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="actions_form" tabindex="-1" role="dialog" aria-labelledby="actions_form" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content" style="min-height: 300px;">
+                    <div class="modal-header">
+                        <h5 class="modal-title">ثبت عملکرد <b id="content_name_2"></b> / <b id="cluster_name_2"></b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body flex-column d-flex" id="submit_action_form">
+                        <div class="col-12">
+                            <div hidden class="alert alert-success alert-highlighted" role="alert" id="submit_action_success_messages"></div>
+                            <div hidden class="alert alert-danger alert-highlighted" role="alert" id="submit_action_danger_messages"></div>
+                        </div>
+
+                        <div class="row col-12 mb-2">
+                            <div class="col-4">
+                                <label> مرحله <b class="text-primary">*</b></label>
+                                <select class="form-control" id="action_step_id"></select>
+                            </div>
+
+                            <div class="col-4">
+                                <label> تعداد <b class="text-primary">*</b></label>
+                                <input type="number" class="form-control" id="action_count" min="1" max="20">
+                            </div>
+
+                            <div class="col-4">
+                                <label> عملکرد <b class="text-primary">*</b></label>
+                                <select class="form-control" id="action_result">
+                                    <option value=""></option>
+                                    <option value="0">Independent</option>
+                                    <option value="1">Independent with set up</option>
+                                    <option value="2">Supervision</option>
+                                    <option value="3">Minimal assistance or skillful</option>
+                                    <option value="4">Moderate assistance</option>
+                                    <option value="5">Maximal assistance</option>
+                                    <option value="6">Dependent</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-auto">
+                            <button type="button" class="ladda-button btn btn-primary mb-2 btn-pill" id="submit_action_button">
+                                <span class="ladda-label">ثبت</span>
+                                <span class="ladda-spinner"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

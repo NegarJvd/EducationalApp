@@ -32,7 +32,6 @@ $(document).ready(function() {
                 },
                 error: function (jqXhr, textStatus, errorThrown) {
                     let response = JSON.parse(jqXhr.responseText);
-                    console.log(response)
                     swal("خطا!", response.message, "error");
                 },
 
@@ -63,11 +62,12 @@ $(document).ready(function() {
             success: function (data) {
                 let table_body = $('#contents_table_body');
                 var tr = '<tr>'+
-                    '<td>' + data.data.content_name + '</td>'+
-                    '<td>' + data.data.cluster_name + '</td>'+
+                    '<td class="content_name">' + data.data.content_name + '</td>'+
+                    '<td class="cluster_name">' + data.data.cluster_name + '</td>'+
                     '<td>'+
                     '<input hidden value="' + data.data.cluster_id + '" class="cluster_id">' +
                     '<button type="button" class="btn p-0 view_actions" data-toggle="modal" data-target="#actions_charts" title="عملكرد"> <span class="mdi mdi-eye-outline mdi-dark mdi-18px"></span> </button>' +
+                    '<button type="button" class="btn p-0 submit_action" data-toggle="modal" data-target="#actions_form" title="ثبت عملکرد"> <span class="mdi mdi-square-edit-outline mdi-dark mdi-18px"></span> </button>' +
                     '<button type="button" class="btn p-0 delete_content" title="حذف"> <span class="mdi mdi-trash-can-outline mdi-dark mdi-18px"></span> </button>'+
                     '</td>'+
                     '</tr>';
