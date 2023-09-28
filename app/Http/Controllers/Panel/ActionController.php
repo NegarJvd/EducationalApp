@@ -8,7 +8,9 @@ use App\Models\Step;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Morilog\Jalali\CalendarUtils;
 use Morilog\Jalali\Jalalian;
 
 class ActionController extends Controller
@@ -39,8 +41,9 @@ class ActionController extends Controller
 
         $cluster_id = $request->get('cluster_id');
 
-        //last score
+        //last score-------------------------------------------------------------------------------------
         $last_actions = $user->actions()
+            ->whereNull('admin_id')
             ->whereHas('step', function($q) use ($cluster_id) {
                 $q->where('cluster_id', $cluster_id);
             })
@@ -59,18 +62,20 @@ class ActionController extends Controller
         else
             $last_action_score = 0;
 
-
-        //get scores with dates
+        //get scores with dates--------------------------------------------------------------------------------------
         $month = $request->get('month');
         $last_day = $month < 7 ? 31 : 30;
 
         $results = [];
+        $visit_results = [];
+        $visit_dates = [];
 
         for($i = 1; $i <= $last_day; $i++){
             $start_date = new Jalalian(Jalalian::now()->getYear(), $month, $i, 0, 0, 0);
             $end_date = new Jalalian(Jalalian::now()->getYear(), $month, $i, 23, 59, 59);
 
             $actions = $user->actions()
+                            ->whereNull('admin_id')
                             ->whereHas('step', function($q) use ($cluster_id) {
                                 $q->where('cluster_id', $cluster_id);
                             })
@@ -83,9 +88,35 @@ class ActionController extends Controller
             $results[] = $actions;
         }
 
+        $visit_actions = $user->actions()
+            ->whereNotNull('admin_id')
+            ->whereHas('step', function($q) use ($cluster_id) {
+                $q->where('cluster_id', $cluster_id);
+            })
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('step_id as step_id'))
+            ->groupBy('date', 'step_id')
+            ->selectRaw('sum(count * result)/sum(count) as avg')
+            ->get();
+
+        $last_date = null;
+        foreach ($visit_actions as $visit_action){
+            if($visit_action->date == $last_date){
+                $last_visit_score_in_a_day = array_pop($visit_results);
+                $last_visit_score_in_a_day += $visit_action->avg;
+                array_push($visit_results, $last_visit_score_in_a_day);
+            }else{
+                $visit_dates[] = CalendarUtils::strftime('m/d', strtotime($visit_action->date));
+                $last_date = $visit_action->date;
+                array_push($visit_results, $visit_action->avg);;
+            }
+        }
+
         $data = [
             'last_action_score' => round($last_action_score, 2),
-            'results' => $results
+            'last_visit_action_score' => count($visit_results) > 0 ? round(end($visit_results), 2) : 0,
+            'results' => $results,
+            'visit_dates' => $visit_dates,
+            'visit_results' => $visit_results
         ];
 
         return $this->customSuccess($data, "ارزیابی");

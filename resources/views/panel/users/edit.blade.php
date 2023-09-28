@@ -317,6 +317,7 @@
                                                     <tr>
                                                         <td class="content_name">{{$cluster->content->name}}</td>
                                                         <td class="cluster_name">{{$cluster->name}}</td>
+                                                        <td hidden class="steps_count">{{$cluster->steps()->count()}}</td>
                                                         <td>
                                                             @can('user-evaluation')
                                                                 <input hidden value="{{$cluster->id}}" class="cluster_id">
@@ -422,6 +423,7 @@
 
         <input hidden value="{{$user->id}}" id="user_id">
         <input hidden value="" id="cluster_id">
+        <input hidden value="" id="steps_count">
 
         <div class="modal fade" id="actions_charts" tabindex="-1" role="dialog" aria-labelledby="actions_charts" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -435,7 +437,7 @@
 
                     <div class="modal-body" id="popup_form">
                         <div class="row col-12">
-                            <div class="col-8">
+                            <div class="col-4">
                                 <select class="form-control" id="month">
                                     <option value="1">فروردین</option>
                                     <option value="2">اردیبهشت</option>
@@ -454,14 +456,34 @@
                             </div>
 
                             <div class="col-4">
-                                <b> آخرین امتیاز :</b>
+                                <b> آخرین امتیاز والدین :</b>
                                 <span id="last_action_score"></span>
+                            </div>
+
+                            <div class="col-4">
+                                <b> آخرین امتیاز درمانگر :</b>
+                                <span id="last_visit_action_score"></span>
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="card card-default">
-                                <div class="card-body charts_div" style="min-height: 450px;">
+                                <div class="card-body charts_div" id="parents_chart" style="min-height: 450px;">
+                                    <div class="card-body d-flex align-items-center justify-content-center" style="height: 400px">
+                                        <div class="sk-folding-cube">
+                                            <div class="sk-cube1 sk-cube"></div>
+                                            <div class="sk-cube2 sk-cube"></div>
+                                            <div class="sk-cube4 sk-cube"></div>
+                                            <div class="sk-cube3 sk-cube"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="card card-default">
+                                <div class="card-body charts_div" id="therapists_chart" style="min-height: 450px;">
                                     <div class="card-body d-flex align-items-center justify-content-center" style="height: 400px">
                                         <div class="sk-folding-cube">
                                             <div class="sk-cube1 sk-cube"></div>
@@ -510,13 +532,13 @@
                                 <label> عملکرد <b class="text-primary">*</b></label>
                                 <select class="form-control" id="action_result">
                                     <option value=""></option>
-                                    <option value="0">Independent</option>
-                                    <option value="1">Independent with set up</option>
-                                    <option value="2">Supervision</option>
+                                    <option value="6">Independent</option>
+                                    <option value="5">Independent with set up</option>
+                                    <option value="4">Supervision</option>
                                     <option value="3">Minimal assistance or skillful</option>
-                                    <option value="4">Moderate assistance</option>
-                                    <option value="5">Maximal assistance</option>
-                                    <option value="6">Dependent</option>
+                                    <option value="2">Moderate assistance</option>
+                                    <option value="1">Maximal assistance</option>
+                                    <option value="0">Dependent</option>
                                 </select>
                             </div>
                         </div>

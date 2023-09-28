@@ -5,27 +5,30 @@ $(document).ready(function() {
         let cluster_id = td.find('.cluster_id').val();
         let content_name = td.parent().find('.content_name').text();
         let cluster_name = td.parent().find('.cluster_name').text();
+        let steps_count = td.parent().find('.steps_count').text();
 
         //fix cluster id for filtering
         $('#cluster_id').val(cluster_id).change();
+        $('#steps_count').val(steps_count).change();
         $('#content_name').text(content_name).change();
         $('#cluster_name').text(cluster_name).change();
         //
 
         let user_id = $('#user_id').val();
         let month = $('#month').val();
-        get_evaluation_data(cluster_id, user_id, month);
+        get_evaluation_data(cluster_id, user_id, month, steps_count);
     });
 
     $('#month').on('change', function () {
         let cluster_id = $('#cluster_id').val();
         let user_id = $('#user_id').val();
         let month = $(this).val();
-        get_evaluation_data(cluster_id, user_id, month);
+        let steps_count = $('#steps_count').val();
+        get_evaluation_data(cluster_id, user_id, month, steps_count);
     })
 });
 
-function get_evaluation_data(cluster_id, user_id, month) {
+function get_evaluation_data(cluster_id, user_id, month, steps_count) {
     let chart_div = $('.charts_div');
 
     chart_div.empty();
@@ -52,15 +55,15 @@ function get_evaluation_data(cluster_id, user_id, month) {
         },
         success: function (data) {
             $('#last_action_score').text(data.data.last_action_score).change();
+            $('#last_visit_action_score').text(data.data.last_visit_action_score).change();
 
             chart_div.empty();
-            chart_div.append(
-                '<canvas id="chart_convas" class="chartjs"></canvas>'
-            );
+            $('#parents_chart').append('<canvas id="parents_chart_convas" class="chartjs"></canvas>');
+            $('#therapists_chart').append('<canvas id="therapists_chart_convas" class="chartjs"></canvas>');
 
-            var parents_chart = document.getElementById("chart_convas");
+            var parents_chart = document.getElementById("parents_chart_convas");
             if (parents_chart !== null) {
-                var chart = new Chart(parents_chart, {
+                new Chart(parents_chart, {
                     // The type of chart we want to create
                     type: "line",
 
@@ -69,10 +72,22 @@ function get_evaluation_data(cluster_id, user_id, month) {
                         labels: [...Array(data.data.results.length)].map((_, i) => i + 1),
                         datasets: [
                             {
-                                label: "عملکرد ثبت شده توسط والدین",
+                                label: "عملکرد",
                                 backgroundColor: "transparent",
                                 borderColor: "rgb(82, 136, 255)",
                                 data: data.data.results,
+                                lineTension: 0.3,
+                                pointRadius: 5,
+                                pointBackgroundColor: "rgba(255,255,255,1)",
+                                pointHoverBackgroundColor: "rgba(255,255,255,1)",
+                                pointBorderWidth: 2,
+                                pointHoverRadius: 8,
+                                pointHoverBorderWidth: 1
+                            },{
+                                label: "حداکثر مقدار",
+                                backgroundColor: "transparent",
+                                borderColor: "rgb(239,130,29)",
+                                data: [...Array(data.data.results.length)].map((_, i) => i = steps_count * 2),
                                 lineTension: 0.3,
                                 pointRadius: 5,
                                 pointBackgroundColor: "rgba(255,255,255,1)",
@@ -88,13 +103,14 @@ function get_evaluation_data(cluster_id, user_id, month) {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        legend: {
-                            display: false
-                        },
                         layout: {
                             padding: {
                                 right: 10
                             }
+                        },
+                        title: {
+                            display: true,
+                            text: 'عملکرد ثبت شده توسط والدین'
                         },
                         scales: {
                             xAxes: [
@@ -112,25 +128,8 @@ function get_evaluation_data(cluster_id, user_id, month) {
                                         zeroLineColor: "#eee",
                                     },
                                     ticks: {
-                                        callback: function (value) {
-                                            var ranges = [
-                                                {divider: 1e6, suffix: "M"},
-                                                {divider: 1e4, suffix: "k"}
-                                            ];
-
-                                            function formatNumber(n) {
-                                                for (var i = 0; i < ranges.length; i++) {
-                                                    if (n >= ranges[i].divider) {
-                                                        return (
-                                                            (n / ranges[i].divider).toString() + ranges[i].suffix
-                                                        );
-                                                    }
-                                                }
-                                                return n;
-                                            }
-
-                                            return formatNumber(value);
-                                        }
+                                        beginAtZero: true,
+                                        suggestedMax: ( (steps_count*2) + 1 )
                                     }
                                 }
                             ]
@@ -141,7 +140,7 @@ function get_evaluation_data(cluster_id, user_id, month) {
                                     return "تاریخ: " + month + "/" + data["labels"][tooltipItem[0]["index"]];
                                 },
                                 label: function (tooltipItem, data) {
-                                    return "امتیاز: " + data["datasets"][0]["data"][tooltipItem["index"]];
+                                    return "امتیاز: " + data["datasets"][tooltipItem["datasetIndex"]]["data"][tooltipItem["index"]];
                                 }
                             },
                             responsive: true,
@@ -163,6 +162,109 @@ function get_evaluation_data(cluster_id, user_id, month) {
                     }
                 });
             }
+
+            var therapists_chart = document.getElementById("therapists_chart_convas");
+            if (therapists_chart !== null) {
+                new Chart(therapists_chart, {
+                    // The type of chart we want to create
+                    type: "line",
+
+                    // The data for our dataset
+                    data: {
+                        labels: data.data.visit_dates,
+                        datasets: [
+                            {
+                                label: "عملکرد",
+                                backgroundColor: "transparent",
+                                borderColor: "rgb(82, 136, 255)",
+                                data: data.data.visit_results,
+                                lineTension: 0.3,
+                                pointRadius: 5,
+                                pointBackgroundColor: "rgba(255,255,255,1)",
+                                pointHoverBackgroundColor: "rgba(255,255,255,1)",
+                                pointBorderWidth: 2,
+                                pointHoverRadius: 8,
+                                pointHoverBorderWidth: 1
+                            },{
+                                label: "حداکثر مقدار",
+                                backgroundColor: "transparent",
+                                borderColor: "rgb(239,130,29)",
+                                data: [...Array(data.data.visit_results.length)].map((_, i) => i = steps_count * 7),
+                                lineTension: 0.3,
+                                pointRadius: 5,
+                                pointBackgroundColor: "rgba(255,255,255,1)",
+                                pointHoverBackgroundColor: "rgba(255,255,255,1)",
+                                pointBorderWidth: 2,
+                                pointHoverRadius: 8,
+                                pointHoverBorderWidth: 1
+                            }
+                        ]
+                    },
+
+                    // Configuration options go here
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                right: 10
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'عملکرد ثبت شده توسط درمانگر'
+                        },
+                        scales: {
+                            xAxes: [
+                                {
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }
+                            ],
+                            yAxes: [
+                                {
+                                    gridLines: {
+                                        display: true,
+                                        color: "#eee",
+                                        zeroLineColor: "#eee",
+                                    },
+                                    ticks: {
+                                        beginAtZero: true,
+                                        suggestedMax: ( (steps_count*7) + 1 )
+                                    }
+                                }
+                            ]
+                        },
+                        tooltips: {
+                            callbacks: {
+                                title: function (tooltipItem, data) {
+                                    return "تاریخ: " + data["labels"][tooltipItem[0]["index"]];
+                                },
+                                label: function (tooltipItem, data) {
+                                    return "امتیاز: " + data["datasets"][tooltipItem["datasetIndex"]]["data"][tooltipItem["index"]];
+                                }
+                            },
+                            responsive: true,
+                            intersect: false,
+                            enabled: true,
+                            titleFontColor: "#888",
+                            bodyFontColor: "#555",
+                            titleFontSize: 12,
+                            bodyFontSize: 18,
+                            backgroundColor: "rgba(256,256,256,0.95)",
+                            xPadding: 20,
+                            yPadding: 10,
+                            displayColors: false,
+                            borderColor: "rgba(220, 220, 220, 0.9)",
+                            borderWidth: 2,
+                            caretSize: 10,
+                            caretPadding: 15
+                        }
+                    }
+                });
+            }
+
         },
         error: function (jqXhr, textStatus, errorThrown) {
             let response = JSON.parse(jqXhr.responseText);
