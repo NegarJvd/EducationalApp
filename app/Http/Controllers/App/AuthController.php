@@ -7,6 +7,7 @@ use App\Http\Resources\AdminResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Cryptommer\Smsir\Objects\Parameters;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -56,9 +57,13 @@ class AuthController extends Controller
 
         $password = "1234";//rand(1111, 9999);
         //Redis::set($user->phone, Hash::make($password), 'EX', 300); //expire in 5 min
-        $send = smsir::Send();
-        $parameter = new Parameters('otp', $password);
-        $send->Verify($user->phone, $this->sms_template('otp'), [$parameter]);
+        try{
+            $send = smsir::Send();
+            $parameter = new Parameters('otp', $password);
+            $send->Verify($user->phone, $this->sms_template('otp'), [$parameter]);
+        }catch(Exception $exception){
+            return $this->customError("اعتبار کافی نمی باشد.");
+        }
 
         return $this->customSuccess($is_first_time, 'رمز یکبار مصرف برای ' . $request->get('phone') . ' ارسال شد.');
     }
