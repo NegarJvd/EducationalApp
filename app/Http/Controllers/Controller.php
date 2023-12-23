@@ -11,17 +11,17 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests, Response;
 
-    public $perPagePanel = 15;
+    public $perPagePanel = 40;
 
-    public $perPageApp = 30;
+    public $perPageApp = 50;
 
     public static function perPage($type="App"){
         switch ($type){
             case "Panel":
-                return 15;
+                return 40;
 
             case "App":
-                return 30;
+                return 50;
         }
 
         return 10;
