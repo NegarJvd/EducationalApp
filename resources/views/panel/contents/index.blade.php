@@ -62,7 +62,7 @@
                                         </a>
                                     </h5>
 
-                                    <img class="card-img rounded-0" src="{{$content->cover_image}}">
+                                    <img class="card-img rounded-0" src="{{$content->cover_image ? $content->cover_image : asset('/assets/img/image-placeholder.png')}}">
 
                                     <div class="card-body row">
                                         <div class="col-10">

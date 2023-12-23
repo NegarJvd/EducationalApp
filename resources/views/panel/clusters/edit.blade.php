@@ -129,15 +129,19 @@
 
                                 <div class="col-6 justify-content-center pt-4">
                                     <input class="step_cover_id" value="{{$step->cover_id}}" hidden>
-                                    <img src="{{$step->cover_image}}" style="max-height: 300px; width: auto;">
+                                    <img src="{{$step->cover_image ? $step->cover_image : asset('/assets/img/image-placeholder.png')}}" style="max-height: 300px; width: auto;">
                                 </div>
 
                                 <div class="col-6 justify-content-center pt-4">
                                     <input class="step_video_id" value="{{$step->video_id}}" hidden>
-                                    <video style="max-height: 300px; width: -webkit-fill-available;" controls poster>
-                                        <source src="{{$step->video_file}}" type=video/ogg>
-                                        <source src="{{$step->video_file}}" type=video/mp4>
-                                    </video>
+                                    @if($step->video_file)
+                                        <video style="max-height: 300px; width: -webkit-fill-available;" controls poster>
+                                            <source src="{{$step->video_file}}" type=video/ogg>
+                                            <source src="{{$step->video_file}}" type=video/mp4>
+                                        </video>
+                                    @else
+                                        <img src="{{asset('/assets/img/video-placeholder.svg')}}" style="max-height: 300px; width: auto;">
+                                    @endif
                                 </div>
                             </div>
                         </div>

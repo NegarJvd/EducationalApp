@@ -62,7 +62,7 @@ class Admin extends Authenticatable
         if(array_key_exists('medical_system_card_id', $this->attributes) and !is_null($this->attributes['medical_system_card_id'])
             and $this->medical_system_card and file_exists($this->medical_system_card->file_path))
             return asset($this->medical_system_card->file_path);
-        return asset('/assets/img/cc1b.jpg');
+        return null;
     }
 
     public static function status(){

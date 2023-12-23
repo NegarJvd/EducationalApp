@@ -110,7 +110,7 @@
                                         </a>
                                     </h5>
 
-                                    <img class="card-img rounded-0" src="{{$cluster->cover_image}}">
+                                    <img class="card-img rounded-0" src="{{$cluster->cover_image ? $cluster->cover_image : asset('/assets/img/image-placeholder.png')}}">
 
                                     <div class="card-body row">
 

@@ -202,7 +202,7 @@
                                     </div>
 
                                     <div class="col-12 col-md-7">
-                                        <img src="{{$admin->medical_system_card_file}}" style="max-height: 300px; width: auto;">
+                                        <img src="{{$admin->medical_system_card_file ? $admin->medical_system_card_file : asset('/assets/img/image-placeholder.png')}}" style="max-height: 300px; width: auto;">
                                     </div>
 
                                 </div>
