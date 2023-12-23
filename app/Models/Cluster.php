@@ -27,10 +27,13 @@ class Cluster extends Model
         static::deleting(function ($model) {
             $cluster_cover = $model->cover_id;
             $file = File::withTrashed()->find($cluster_cover);
-            if (file_exists($file->file_path)){
-                unlink($file->file_path);
+            if($file){
+                if (file_exists($file->file_path)){
+                    unlink($file->file_path);
+
+                }
+                $file->delete();
             }
-            $file->delete();
         });
     }
 

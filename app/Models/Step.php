@@ -27,17 +27,21 @@ class Step extends Model
         static::deleting(function ($model) {
             $step_cover = $model->cover_id;
             $cover_file = File::withTrashed()->find($step_cover);
-            if (file_exists($cover_file->file_path)){
-                unlink($cover_file->file_path);
+            if($cover_file){
+                if (file_exists($cover_file->file_path)){
+                    unlink($cover_file->file_path);
+                }
+                $cover_file->delete();
             }
-            $cover_file->delete();
 
             $step_video = $model->video_id;
             $video_file = File::withTrashed()->find($step_video);
-            if (file_exists($video_file->file_path)){
-                unlink($video_file->file_path);
+            if($video_file){
+                if (file_exists($video_file->file_path)){
+                    unlink($video_file->file_path);
+                }
+                $video_file->delete();
             }
-            $video_file->delete();
         });
     }
 

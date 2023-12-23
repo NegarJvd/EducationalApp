@@ -26,10 +26,13 @@ class Content extends Model
         static::deleting(function ($model) {
             $content_cover = $model->cover_id;
             $file = File::withTrashed()->find($content_cover);
-            if (file_exists($file->file_path)){
-                unlink($file->file_path);
+            if($file){
+                if (file_exists($file->file_path)){
+                    unlink($file->file_path);
+
+                }
+                $file->delete();
             }
-            $file->delete();
         });
     }
 
