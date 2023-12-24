@@ -102,8 +102,8 @@
 {{--                        </form>--}}
 
                         @foreach($clusters as $cluster)
-                            <div class="col-md-6 col-xl-3">
-                                <div class="card  mb-4 p-0">
+                            <div class="col-md-6 col-xl-4">
+                                <div class="card mb-4 p-0">
                                     <h5 class="card-title text-primary pt-4 pb-2 px-3">
                                         <a href="{{route('panel.contents.clusters.edit', [$content->id, $cluster->id])}}">
                                             {{$cluster->name}}
