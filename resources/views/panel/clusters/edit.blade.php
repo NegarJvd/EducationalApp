@@ -125,8 +125,6 @@
                             </div>
 
                             <div class="col-12 row justify-content-center align-self-center mb-2">
-                                <p class="col-12 step_description_p">{{$step->description}}</p>
-
                                 <div class="col-6 justify-content-center pt-4">
                                     <input class="step_cover_id" value="{{$step->cover_id}}" hidden>
                                     <img src="{{$step->cover_image ? $step->cover_image : asset('/assets/img/image-placeholder.png')}}" style="max-height: 300px; width: auto;">
@@ -155,10 +153,6 @@
                             <div class="col-6 p-0">
                                 مرحله {{$steps->total() + 1}} :
                             </div>
-                        </div>
-
-                        <div class="col-12 row justify-content-center align-self-center mb-2">
-                            {!! Form::textarea('description', null, ['class' => 'form-control col-12', 'placeholder' => 'توضیحات ...', 'rows' => '4', 'style' => 'height:100%;']) !!}
                         </div>
 
                         <input name="cover_id" id="new_step_cover_id" hidden>
@@ -235,7 +229,6 @@
                             @method('PATCH')
                             @csrf
 
-                            <textarea name="description" id="update_step_description" class="form-control col-12"></textarea>
                             <input name="cover_id" id="update_step_cover_id" hidden>
                             <input name="video_id" id="update_step_video_id" hidden>
 

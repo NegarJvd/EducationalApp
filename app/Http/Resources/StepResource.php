@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 /**
  * @property mixed id
  * @property mixed number
- * @property mixed description
+ * @property mixed cluster
  * @property mixed cover_image
  * @property mixed video_file
  *
@@ -20,7 +20,7 @@ class StepResource extends JsonResource
         return [
             'id' => $this->id,
             'number' => $this->number,
-            'description' => $this->description,
+            'description' => $this->cluster->description,
             'cover_path' => $this->cover_image,
             'video_path' => $this->video_file,
         ];

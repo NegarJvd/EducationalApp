@@ -46,7 +46,7 @@ class Step extends Model
     }
 
     protected $fillable = [
-        'cluster_id', 'number', 'description', 'cover_id', 'video_id'
+        'cluster_id', 'number', 'cover_id', 'video_id'
     ];
 
     protected $appends = [

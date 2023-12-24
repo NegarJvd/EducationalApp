@@ -17,7 +17,6 @@ class StepFactory extends Factory
     public function definition(): array
     {
         return [
-            'description' => fake()->paragraph(3),
             'cover_id' => null, //File::query()->inRandomOrder()->first()->id,
             'video_id' => null //File::query()->inRandomOrder()->first()->id
         ];

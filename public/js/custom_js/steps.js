@@ -212,11 +212,9 @@ $('.update_step').on('click', function () {
     $('#update_step_form').attr('action', route)
 
     let parent = $(this).parent().parent().parent();
-    let description = parent.find('.step_description_p').text();
     let cover_id = parent.find('.step_cover_id').val();
     let video_id = parent.find('.step_video_id').val();
 
-    $('#update_step_description').val(description).change();
     $('#update_step_cover_id').val(cover_id).change();
     $('#update_step_video_id').val(video_id).change();
 

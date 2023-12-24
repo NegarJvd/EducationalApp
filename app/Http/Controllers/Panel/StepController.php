@@ -26,12 +26,11 @@ class StepController extends Controller
 
     public function store(Request $request, Content $content, Cluster $cluster){
         $request->validate([
-            'description' => ['required', 'string'],
             'cover_id' => ['nullable', Rule::in(File::pluck('id'))],
             'video_id' => ['required', Rule::in(File::pluck('id'))],
         ]);
 
-        $data = array_merge($request->only('description', 'cover_id', 'video_id'), ['number' => $cluster->steps()->count() + 1]);
+        $data = array_merge($request->only('cover_id', 'video_id'), ['number' => $cluster->steps()->count() + 1]);
 
         $cluster->steps()->create($data);
 
@@ -41,14 +40,13 @@ class StepController extends Controller
 
     public function update(Request $request, Content $content, Cluster $cluster, Step $step){
         $request->validate([
-            'description' => ['required', 'string'],
             'cover_id' => ['nullable', Rule::in(File::pluck('id'))],
             'video_id' => ['nullable', Rule::in(File::pluck('id'))],
         ]);
 
         //delete ex files
 
-        $step->update($request->only('description', 'cover_id', 'video_id'));
+        $step->update($request->only('cover_id', 'video_id'));
 
         return back()->with('success', 'مرحله با موفقیت ویرایش شد.');
     }
