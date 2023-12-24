@@ -62,12 +62,15 @@ class UsersContentController extends Controller
             ->attach($content_id, ['cluster_id' => $cluster_id]);
 
         $content_name = Content::find($content_id)->name;
-        $cluster_name = Cluster::find($cluster_id)->name;
+        $cluster = Cluster::find($cluster_id);
+        $cluster_name = $cluster->name;
+        $steps_count = $cluster->steps()->count();
 
         $data = [
             'content_name' => $content_name,
             'cluster_name' => $cluster_name,
-            'cluster_id' => $cluster_id
+            'cluster_id' => $cluster_id,
+            'steps_count' => $steps_count
         ];
 
         return $this->customSuccess($data, "محتوا با موفقیت برای کاربر فعال شد.");

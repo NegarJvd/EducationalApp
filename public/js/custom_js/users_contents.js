@@ -64,6 +64,7 @@ $(document).ready(function() {
                 var tr = '<tr>'+
                     '<td class="content_name">' + data.data.content_name + '</td>'+
                     '<td class="cluster_name">' + data.data.cluster_name + '</td>'+
+                    '<td hidden class="steps_count">' + data.data.steps_count + '</td>'+
                     '<td>'+
                     '<input hidden value="' + data.data.cluster_id + '" class="cluster_id">' +
                     '<button type="button" class="btn p-0 view_actions" data-toggle="modal" data-target="#actions_charts" title="عملكرد"> <span class="mdi mdi-eye-outline mdi-dark mdi-18px"></span> </button>' +
