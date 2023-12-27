@@ -77,7 +77,7 @@ class ContentController extends Controller
 
     public function update(Request $request, Content $content){
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'], //, 'unique:contents,name'
             'cover_id' => ['nullable', Rule::in(File::pluck('id'))]
         ]);
 
