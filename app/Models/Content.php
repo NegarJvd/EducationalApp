@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static pluck(string $string)
  * @method static find($content_id)
  * @method static create(array $only)
+ * @method static count()
+ * @method static whereBetween(string $string, array $array)
  */
 class Content extends Model
 {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 //use App\Http\Controllers\UploadController;
 use App\Models\Admin;
+use App\Models\Content;
 use App\Models\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
@@ -36,8 +37,10 @@ class HomeController extends Controller
 //        Artisan::call('storage:link');
 
         $users_count = User::count();
+        $admins_count = Admin::count();
+        $contents_count = Content::count();
 
-        return view('panel/home', compact('users_count'));
+        return view('panel/home', compact('users_count', 'admins_count', 'contents_count'));
     }
 
     public function dashboard_info_counts(){
@@ -52,6 +55,8 @@ class HomeController extends Controller
         }
 
         $last_week_users = [];
+        $last_week_admins = [];
+        $last_week_contents = [];
         $last_week_dates = [];
 
         for($i = 0; $i<7; $i++){
@@ -59,12 +64,16 @@ class HomeController extends Controller
             $end = date("Y-m-d H:i:s", $last_saturday->addHours(23)->addMinutes(59)->addSeconds(59)->getTimestamp());
 
             $last_week_users[] = User::whereBetween('created_at', [$start, $end])->count();
+            $last_week_contents[] = Content::whereBetween('created_at', [$start, $end])->count();
+            $last_week_admins[] = Admin::whereBetween('created_at', [$start, $end])->count();
 
             $last_week_dates[] = [$start, $end];
             $last_saturday = $last_saturday->addDays(1);
         }
 
         $this_week_users = [];
+        $this_week_contents = [];
+        $this_week_admins = [];
         $this_week_dates = [];
 
         for($i = 0; $i<7; $i++){
@@ -72,14 +81,20 @@ class HomeController extends Controller
             $end = date("Y-m-d H:i:s", $this_saturday->addHours(23)->addMinutes(59)->addSeconds(59)->getTimestamp());
 
             $this_week_users[] = User::whereBetween('created_at', [$start, $end])->count();
+            $this_week_contents[] = Content::whereBetween('created_at', [$start, $end])->count();
+            $this_week_admins[] = Admin::whereBetween('created_at', [$start, $end])->count();
 
             $this_week_dates[] = [$start, $end];
             $this_saturday = $this_saturday->addDays(1);
         }
 
         $data['last_week_users'] = $last_week_users;
+        $data['last_week_contents'] = $last_week_contents;
+        $data['last_week_admins'] = $last_week_admins;
         $data['last_week_dates'] = $last_week_dates;
         $data['this_week_users'] = $this_week_users;
+        $data['this_week_contents'] = $this_week_contents;
+        $data['this_week_admins'] = $this_week_admins;
         $data['this_week_dates'] = $this_week_dates;
 
         return $this->customSuccess($data, "اطلاعات داشبورد");

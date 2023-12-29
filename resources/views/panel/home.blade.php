@@ -24,7 +24,7 @@
                     <h2 class="mb-1">{{$users_count}}</h2>
                     <p>تعداد کاربران</p>
                     <div class="chartjs-wrapper">
-                        <canvas class="users_count"></canvas>
+                        <canvas id="users_count"></canvas>
                     </div>
                 </div>
             </div>
@@ -33,10 +33,10 @@
         <div class="col-xl-4 col-sm-4">
             <div class="card card-mini mb-4">
                 <div class="card-body">
-                    <h2 class="mb-1">20</h2>
+                    <h2 class="mb-1">{{$contents_count}}</h2>
                     <p>تعداد محتوا ها</p>
                     <div class="chartjs-wrapper">
-                        <canvas class="users_count"></canvas>
+                        <canvas id="contents_count"></canvas>
                     </div>
                 </div>
             </div>
@@ -45,10 +45,10 @@
         <div class="col-xl-4 col-sm-4">
             <div class="card card-mini mb-4">
                 <div class="card-body">
-                    <h2 class="mb-1">11</h2>
+                    <h2 class="mb-1">{{$admins_count}}</h2>
                     <p>تعداد مديران</p>
                     <div class="chartjs-wrapper">
-                        <canvas class="users_count"></canvas>
+                        <canvas id="admins_count"></canvas>
                     </div>
                 </div>
             </div>

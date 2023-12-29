@@ -13,6 +13,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static create(array $array)
  * @method static find($id)
  * @method static pluck(string $string)
+ * @method static count()
+ * @method static whereBetween(string $string, array $array)
  */
 class Admin extends Authenticatable
 {
