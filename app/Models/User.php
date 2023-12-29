@@ -43,7 +43,8 @@ class User extends Authenticatable
         'mother_name',
         'first_visit',
         'diagnosis',
-        'admin_id'
+        'admin_id',
+        'avatar_id'
     ];
 
     /**
@@ -59,6 +60,11 @@ class User extends Authenticatable
     protected $appends = [
         'name', 'parent_name'
     ];
+
+    public function avatar_path(){
+        $upload = File::find($this->avatar_id);
+        return asset($upload->file_path);
+    }
 
     function getNameAttribute() {
         return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];

@@ -30,11 +30,17 @@ class File extends Model
                 unlink($path);
             }
 
-//            if ($upload->user){
-//                $user = $upload->user()->first();
-//                $user->avatar_id = null;
-//                $user->save();
-//            }
+            if ($model->admin){
+                $admin = $model->admin()->first();
+                $admin->avatar_id = null;
+                $admin->save();
+            }
+
+            if ($model->user){
+                $user = $model->user()->first();
+                $user->avatar_id = null;
+                $user->save();
+            }
 
             if ($model->content){
                 $content = $model->content()->first();
@@ -85,13 +91,13 @@ class File extends Model
         return Storage::size($this->attributes['file_path']);
     }
 
-//    public function admin(){
-//        return $this->hasOne(Admin::class, "avatar_id");
-//    }
-//
-//    public function user(){
-//        return $this->hasOne(User::class, "avatar_id");
-//    }
+    public function admin(){
+        return $this->hasOne(Admin::class, "avatar_id");
+    }
+
+    public function user(){
+        return $this->hasOne(User::class, "avatar_id");
+    }
 
     public function content(){
         return $this->hasOne(Content::class, "cover_id");

@@ -32,7 +32,7 @@ class Admin extends Authenticatable
     protected $fillable = [
         'status',
         'first_name', 'last_name',
-        'phone', 'email',
+        'phone', 'email', 'avatar_id',
         'medical_system_number', 'medical_system_card_id',
         'birth_date',
         'gender', 'address', 'landline_phone',
@@ -75,6 +75,11 @@ class Admin extends Authenticatable
 
     public static function degree_of_education(){
         return ["کارشناسی", "ارشد", "دکتری"];
+    }
+
+    public function avatar_path(){
+        $upload = File::find($this->avatar_id);
+        return asset($upload->file_path);
     }
 
     public function users(){
