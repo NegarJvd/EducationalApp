@@ -55,14 +55,16 @@ class AuthController extends Controller
             $is_first_time = 1;
         }
 
-        $password = "1234";//rand(1111, 9999);
+        $password = rand(1111, 9999);
         //Redis::set($user->phone, Hash::make($password), 'EX', 300); //expire in 5 min
+        $user->otp()->create(['otp' => Hash::make($password)]);
+
         try{
             $send = smsir::Send();
             $parameter = new Parameters('otp', $password);
             $send->Verify($user->phone, $this->sms_template('otp'), [$parameter]);
         }catch(Exception $exception){
-            return $this->customError("اعتبار کافی نمی باشد.");
+            return $this->customError("مشکلی در ارسال پیامک پیش آمده. از بردباری شما متشکریم.");
         }
 
         return $this->customSuccess($is_first_time, 'رمز یکبار مصرف برای ' . $request->get('phone') . ' ارسال شد.');
@@ -75,13 +77,20 @@ class AuthController extends Controller
             'otp' => ['required', 'string'],
         ]);
 
-        $right_otp = "1234";
-
         //$right_otp = Redis::get($request->get('phone'));
         //Redis::del($request->get('phone'));
 
-        //if (Hash::check($request->get('otp'), $right_otp)) {
-        if ($request->get('otp') == $right_otp) {
+        $user = User::where('phone', $request->get('phone'))
+            ->first();
+
+        if(!$user) return $this->customError('نام کاربری اشتباه است.');
+        $right_otp = $user->otp()->where('created_at', '>=', now()->subMinutes(5))->orderBy('created_at', 'desc')->first()->otp;
+
+        foreach ($user->otp as $ex_otp){
+            $ex_otp->delete();
+        }
+
+        if (Hash::check($request->get('otp'), $right_otp)) {
             $user = User::where('phone', $request->get('phone'))->first();
 
             Auth::login($user);
@@ -113,8 +122,9 @@ class AuthController extends Controller
 
         if (!$user) return $this->customError("کاربر یافت نشد.");
 
-        $verification_code = "1234"; //rand(1111, 9999);
+        $verification_code = rand(1111, 9999);
         // Redis::set('verification_' . $user->phone, Hash::make($verification_code), 'EX', 300); //expire in 5 min
+        $user->otp()->create(['verification' => Hash::make($verification_code)]);
 
         $send = smsir::Send();
         $parameter = new Parameters('otp', $verification_code);
@@ -135,19 +145,25 @@ class AuthController extends Controller
 
         if (!$user) return $this->customError("کاربر یافت نشد.");
 
+        $right_otp = $user->otp()->where('created_at', '>=', now()->subMinutes(5))->orderBy('created_at', 'desc')->first()->verification;
 
-        // if (Hash::check($request->get('verification_code'), Redis::get('verification_' . $user->phone))) {
-        if ($request->get('verification_code') == "1234") {
+         if (Hash::check($request->get('verification_code'), $right_otp)) {
             $user->password = Hash::make($request->get('new_password'));
             $user->save();
 
         } else {
             // Redis::del('verification_' . $user->phone);
+             foreach ($user->otp as $ex_otp){
+                 $ex_otp->delete();
+             }
 
             return $this->customError("کد تایید وارد شده صحیح نمی باشد. لطفا برای دریافت مجدد کد تایید اقدام فرمایید.");
         }
 
         // Redis::del('verification_' . $user->phone);
+        foreach ($user->otp as $ex_otp){
+            $ex_otp->delete();
+        }
 
         return $this->customSuccess(1, "رمز عبور با موفقیت تغییر یافت.");
     }

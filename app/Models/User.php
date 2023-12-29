@@ -104,4 +104,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(Ticket::class, 'user_id')->latest('created_at');
     }
+
+    public function otp(){
+        return $this->hasMany(OTP::class);
+    }
 }
