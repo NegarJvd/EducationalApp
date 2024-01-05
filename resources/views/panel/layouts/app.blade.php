@@ -49,7 +49,7 @@
         @yield('head_scripts')
 
         <!-- FAVICON -->
-        <link href="{{asset('assets/img/favicon.ico')}}" rel="shortcut icon" />
+        <link href="{{asset('assets/img/logo.png')}}" rel="shortcut icon" />
 
         <script src="{{ asset('assets/plugins/nprogress/nprogress.js') }}"></script>
     </head>

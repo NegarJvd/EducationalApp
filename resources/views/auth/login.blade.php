@@ -35,7 +35,7 @@
     <link id="sleek-css" rel="stylesheet" href="{{asset('css/sleek.rtl.css')}}" />
 
     <!-- FAVICON -->
-    <link href="{{asset('assets/img/favicon.ico')}}" rel="shortcut icon" />
+    <link href="{{asset('assets/img/logo.png')}}" rel="shortcut icon" />
 
 </head>
 
