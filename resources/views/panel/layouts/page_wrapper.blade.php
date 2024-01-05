@@ -22,6 +22,7 @@
 
                 <div class="navbar-right ">
                     <ul class="nav navbar-nav">
+                        {{--
                         <li class="dropdown notifications-menu custom-dropdown">
                             <button class="dropdown-toggle notify-toggler custom-dropdown-toggler messages_list">
                                 <i class="mdi mdi-bell-outline"></i>
@@ -36,38 +37,38 @@
                                 </div>
 
                                 <div class="card-body px-0 py-3">
-{{--                                    <ul class="nav nav-tabs nav-style-border p-0 justify-content-between" id="myTab" role="tablist">--}}
-{{--                                        <li class="nav-item mx-3 my-0 py-0">--}}
-{{--                                            <a class="nav-link active pb-3" id="my-sms-tab" data-toggle="tab" href="#my-sms" role="tab" aria-controls="my-sms" aria-selected="true">پیامک ها</a>--}}
-{{--                                        </li>--}}
+                                    <ul class="nav nav-tabs nav-style-border p-0 justify-content-between" id="myTab" role="tablist">
+                                        <li class="nav-item mx-3 my-0 py-0">
+                                            <a class="nav-link active pb-3" id="my-sms-tab" data-toggle="tab" href="#my-sms" role="tab" aria-controls="my-sms" aria-selected="true">پیامک ها</a>
+                                        </li>
 
-{{--                                        <li class="nav-item mx-3 my-0 py-0">--}}
-{{--                                            <a class="nav-link pb-3" id="my-notification-tab" data-toggle="tab" href="#my-notification" role="tab" aria-controls="my-notification" aria-selected="false">آگاه ساز ها</a>--}}
-{{--                                        </li>--}}
+                                        <li class="nav-item mx-3 my-0 py-0">
+                                            <a class="nav-link pb-3" id="my-notification-tab" data-toggle="tab" href="#my-notification" role="tab" aria-controls="my-notification" aria-selected="false">آگاه ساز ها</a>
+                                        </li>
 
-{{--                                        <li class="nav-item mx-3 my-0 py-0">--}}
-{{--                                            <a class="nav-link pb-3" id="my-ticket-tab" data-toggle="tab" href="#my-ticket" role="tab" aria-controls="my-ticket" aria-selected="false">تیکت ها</a>--}}
-{{--                                        </li>--}}
+                                        <li class="nav-item mx-3 my-0 py-0">
+                                            <a class="nav-link pb-3" id="my-ticket-tab" data-toggle="tab" href="#my-ticket" role="tab" aria-controls="my-ticket" aria-selected="false">تیکت ها</a>
+                                        </li>
 
-{{--                                    </ul>--}}
+                                    </ul>
 
                                     <div class="tab-content" id="myTabContent3">
-{{--                                        <div class="tab-pane fade show active" id="my-sms" role="tabpanel" aria-labelledby="my-sms-tab">--}}
-{{--                                            <ul class="list-unstyled my_messages_list_content" style="height: 360px" id="sms_list_content"></ul>--}}
-{{--                                        </div>--}}
+                                        <div class="tab-pane fade show active" id="my-sms" role="tabpanel" aria-labelledby="my-sms-tab">
+                                            <ul class="list-unstyled my_messages_list_content" style="height: 360px" id="sms_list_content"></ul>
+                                        </div>
 
-{{--                                        <div class="tab-pane fade" id="my-notification" role="tabpanel" aria-labelledby="my-notification-tab">--}}
-{{--                                            <ul class="list-unstyled my_messages_list_content" style="height: 360px" id="notification_list_content"></ul>--}}
-{{--                                        </div>--}}
+                                        <div class="tab-pane fade" id="my-notification" role="tabpanel" aria-labelledby="my-notification-tab">
+                                            <ul class="list-unstyled my_messages_list_content" style="height: 360px" id="notification_list_content"></ul>
+                                        </div>
 
-{{--                                        <div class="tab-pane fade" id="my-ticket" role="tabpanel" aria-labelledby="my-ticket-tab">--}}
-{{--                                            <ul class="list-unstyled my_messages_list_content" style="height: 360px" id="ticket_list_content"></ul>--}}
-{{--                                        </div>--}}
+                                        <div class="tab-pane fade" id="my-ticket" role="tabpanel" aria-labelledby="my-ticket-tab">
+                                            <ul class="list-unstyled my_messages_list_content" style="height: 360px" id="ticket_list_content"></ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </li>
-
+                        --}}
 {{--                        <li class="right-sidebar-in right-sidebar-2-menu">--}}
 {{--                            <i class="mdi mdi-settings mdi-spin"></i>--}}
 {{--                        </li>--}}
