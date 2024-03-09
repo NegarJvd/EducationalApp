@@ -42,6 +42,8 @@ class ActionController extends Controller
         //get scores with dates--------------------------------------------------------------------------------------
         $month = $request->get('month');
         $last_day = $month < 7 ? 31 : 30;
+        if($month == 12)
+            $last_day = Jalalian::now()->isLeapYear() ? 30 : 29;
 
         $results = [];
         $visit_results = [];
