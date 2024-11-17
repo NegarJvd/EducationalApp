@@ -247,7 +247,7 @@
 
                                 <div class="col-12 col-md-7">
                                     <input type="text" class="form-control" id="first_visit" value="{{$user->first_visit}}">
-                                    <input type="text" class="form-control" name="first_visit" id="alt_first_visit" value="{{strtotime($user->first_visit)}}" hidden>
+                                    <input type="text" class="form-control" name="first_visit" id="alt_first_visit" value="{{$user->first_visit ? strtotime($user->first_visit) : ""}}" hidden>
                                 </div>
                             </div>
 
