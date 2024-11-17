@@ -72,7 +72,13 @@
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->phone }}</td>
                                     <td>{{ $user->parent_name }}</td>
-                                    <td>{{ Morilog\Jalali\CalendarUtils::strftime('Y/m/d', strtotime($user->first_visit))}}</td>
+                                    <td>
+                                        @if($user->first_visit)
+                                            {{ Morilog\Jalali\CalendarUtils::strftime('Y/m/d', strtotime($user->first_visit))}}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>{{ $user->diagnosis }}</td>
                                     <td>
 
