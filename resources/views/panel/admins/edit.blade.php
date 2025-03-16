@@ -192,7 +192,7 @@
 
                                 <div class="col-12 col-md-7">
                                     <input type="text" class="form-control" id="birth_date" value="{{$admin->birth_date}}" autocomplete="off">
-                                    <input type="text" class="form-control" name="birth_date" id="alt_birth_date" value="{{strtotime($admin->birth_date)}}" hidden>
+                                    <input type="text" class="form-control" name="birth_date" id="alt_birth_date" value="{{$admin->birth_date ? strtotime($admin->birth_date) : ""}}" hidden>
                                 </div>
                             </div>
 
